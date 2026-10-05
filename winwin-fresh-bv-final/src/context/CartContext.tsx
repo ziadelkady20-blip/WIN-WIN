@@ -10,7 +10,7 @@ export interface CartItem {
   pricePerKg: number;
   unit: string;
   image: string;
-  quantity: number; // in kg
+  quantity: number;
 }
 
 export interface AppliedCoupon {
@@ -50,50 +50,34 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [defaultDeliveryFee, setDefaultDeliveryFee] = useState<number>(4.95);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // Load cart from localStorage
   useEffect(() => {
     try {
       const savedCart = localStorage.getItem("winwin_cart");
-      if (savedCart) {
-        setItems(JSON.parse(savedCart));
-      }
+      if (savedCart) setItems(JSON.parse(savedCart));
       const savedCoupon = localStorage.getItem("winwin_coupon");
-      if (savedCoupon) {
-        setAppliedCoupon(JSON.parse(savedCoupon));
-      }
+      if (savedCoupon) setAppliedCoupon(JSON.parse(savedCoupon));
     } catch (e) {
       console.error("Error reading cart from localStorage", e);
     }
     setIsLoaded(true);
 
-    // Fetch delivery settings dynamically
     fetch("/api/delivery-settings")
       .then((res) => res.json())
       .then((data) => {
-        if (data?.freeDeliveryThreshold) {
-          setFreeDeliveryThreshold(parseFloat(data.freeDeliveryThreshold));
-        }
-        if (data?.deliveryFee) {
-          setDefaultDeliveryFee(parseFloat(data.deliveryFee));
-        }
+        if (data?.freeDeliveryThreshold) setFreeDeliveryThreshold(parseFloat(data.freeDeliveryThreshold));
+        if (data?.deliveryFee) setDefaultDeliveryFee(parseFloat(data.deliveryFee));
       })
-      .catch(() => {
-        // Fallback to default €35 and €4.95
-      });
+      .catch(() => {});
   }, []);
 
-  // Save cart to localStorage
   useEffect(() => {
     if (!isLoaded) return;
     try {
       localStorage.setItem("winwin_cart", JSON.stringify(items));
-      if (appliedCoupon) {
-        localStorage.setItem("winwin_coupon", JSON.stringify(appliedCoupon));
-      } else {
-        localStorage.removeItem("winwin_coupon");
-      }
+      if (appliedCoupon) localStorage.setItem("winwin_coupon", JSON.stringify(appliedCoupon));
+      else localStorage.removeItem("winwin_coupon");
     } catch (e) {
-      console.error("Error saving cart to localStorage", e);
+      console.error("Error saving cart from localStorage", e);
     }
   }, [items, appliedCoupon, isLoaded]);
 
@@ -103,11 +87,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       if (existing) {
         return prev.map((item) =>
           item.id === product.id
-            ? { ...item, quantity: Math.round((item.quantity + quantity) * 100) / 100 }
+            ? { ...item, quantity: Math.max(1, Math.round(item.quantity + quantity)) }
             : item
         );
       }
-      return [...prev, { ...product, quantity }];
+      return [...prev, { ...product, quantity: Math.max(1, Math.round(quantity)) }];
     });
   };
 
@@ -117,15 +101,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       return;
     }
     setItems((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, quantity: Math.round(quantity * 100) / 100 } : item
-      )
+      prev.map((item) => item.id === id ? { ...item, quantity: Math.max(1, Math.round(quantity)) } : item)
     );
   };
 
-  const removeItem = (id: number) => {
-    setItems((prev) => prev.filter((item) => item.id !== id));
-  };
+  const removeItem = (id: number) => setItems((prev) => prev.filter((item) => item.id !== id));
 
   const clearCart = () => {
     setItems([]);
@@ -137,7 +117,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setCouponError(null);
     const cleanCode = code.trim().toUpperCase();
     if (!cleanCode) return false;
-
     try {
       const res = await fetch(`/api/coupons/validate?code=${encodeURIComponent(cleanCode)}&subtotal=${subtotal}`);
       const data = await res.json();
@@ -162,50 +141,41 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setCouponError(null);
   };
 
-  const subtotal = items.reduce(
-    (sum, item) => sum + item.pricePerKg * item.quantity,
-    0
-  );
-
+  const subtotal = items.reduce((sum, item) => sum + item.pricePerKg * item.quantity, 0);
   const isFreeDelivery = items.length > 0 && subtotal >= freeDeliveryThreshold;
   const deliveryFee = items.length === 0 ? 0 : isFreeDelivery ? 0 : defaultDeliveryFee;
   const amountNeededForFreeDelivery = Math.max(0, freeDeliveryThreshold - subtotal);
 
   let discountAmount = 0;
   if (appliedCoupon && subtotal > 0) {
-    if (appliedCoupon.discountType === "percentage") {
-      discountAmount = (subtotal * appliedCoupon.discountValue) / 100;
-    } else {
-      discountAmount = Math.min(subtotal, appliedCoupon.discountValue);
-    }
+    if (appliedCoupon.discountType === "percentage") discountAmount = (subtotal * appliedCoupon.discountValue) / 100;
+    else discountAmount = Math.min(subtotal, appliedCoupon.discountValue);
   }
 
   const total = Math.max(0, subtotal - discountAmount + deliveryFee);
   const totalItemsCount = items.reduce((count, item) => count + item.quantity, 0);
 
   return (
-    <CartContext.Provider
-      value={{
-        items,
-        addToCart,
-        updateQuantity,
-        removeItem,
-        clearCart,
-        subtotal: Math.round(subtotal * 100) / 100,
-        deliveryFee: Math.round(deliveryFee * 100) / 100,
-        discountAmount: Math.round(discountAmount * 100) / 100,
-        total: Math.round(total * 100) / 100,
-        totalItemsCount: Math.round(totalItemsCount * 10) / 10,
-        appliedCoupon,
-        couponError,
-        applyCoupon,
-        removeCoupon,
-        freeDeliveryThreshold,
-        defaultDeliveryFee,
-        amountNeededForFreeDelivery: Math.round(amountNeededForFreeDelivery * 100) / 100,
-        isFreeDelivery,
-      }}
-    >
+    <CartContext.Provider value={{
+      items,
+      addToCart,
+      updateQuantity,
+      removeItem,
+      clearCart,
+      subtotal: Math.round(subtotal * 100) / 100,
+      deliveryFee: Math.round(deliveryFee * 100) / 100,
+      discountAmount: Math.round(discountAmount * 100) / 100,
+      total: Math.round(total * 100) / 100,
+      totalItemsCount: Math.round(totalItemsCount),
+      appliedCoupon,
+      couponError,
+      applyCoupon,
+      removeCoupon,
+      freeDeliveryThreshold,
+      defaultDeliveryFee,
+      amountNeededForFreeDelivery: Math.round(amountNeededForFreeDelivery * 100) / 100,
+      isFreeDelivery,
+    }}>
       {children}
     </CartContext.Provider>
   );
@@ -213,8 +183,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
 export function useCart() {
   const context = useContext(CartContext);
-  if (!context) {
-    throw new Error("useCart must be used within a CartProvider");
-  }
+  if (!context) throw new Error("useCart must be used within a CartProvider");
   return context;
 }
