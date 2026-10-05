@@ -16,7 +16,7 @@ interface HomeSectionsProps {
 const FALLBACK_HERO_IMAGE =
   "https://images.pexels.com/photos/12932209/pexels-photo-12932209.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=1800&q=85";
 
-export function HomeSections({ sections, categories, featuredProducts }: HomeSectionsProps) {
+export function HomeSections({ sections, categories, featuredProducts, seasonalProducts = [], saleProducts = [] }: HomeSectionsProps) {
   const { lang } = useLanguage();
 
   // Read CMS content once. The homepage itself is intentionally rendered as a
@@ -168,7 +168,28 @@ export function HomeSections({ sections, categories, featuredProducts }: HomeSec
         </div>
       </section>
 
-      {/* Product sections intentionally removed: homepage must not show default product grids. */}
+      {/* HOMEPAGE PRODUCT SECTIONS — only products explicitly selected by the admin */}
+      {featuredProducts.length > 0 && <ProductSection
+        id="home-featured"
+        eyebrow={lang === "nl" ? "Uitgelicht" : "Featured Favorites"}
+        title={lang === "nl" ? "Uitgelichte favorieten" : "Featured Favorites"}
+        subtitle={lang === "nl" ? "Producten die u op de homepage hebt geselecteerd." : "Products you selected for the homepage."}
+        products={featuredProducts}
+      />}
+      {saleProducts.length > 0 && <ProductSection
+        id="home-special"
+        eyebrow={lang === "nl" ? "Speciale aanbieding" : "Special Offer"}
+        title={lang === "nl" ? "Wekelijkse speciale aanbiedingen" : "Weekly Special Offers"}
+        subtitle={lang === "nl" ? "Uw geselecteerde aanbiedingen." : "Your selected special offers."}
+        products={saleProducts}
+      />}
+      {seasonalProducts.length > 0 && <ProductSection
+        id="home-seasonal"
+        eyebrow={lang === "nl" ? "Vers van het seizoen" : "Fresh This Season"}
+        title={lang === "nl" ? "Vers dit seizoen" : "Fresh This Season"}
+        subtitle={lang === "nl" ? "Producten die u hebt geselecteerd لهذا الموسم." : "Products you selected for this season."}
+        products={seasonalProducts}
+      />}
 
       {/* DELIVERY CTA — exactly one */}
       <section id="home-delivery" className="bg-[#0a3528] py-16 text-white sm:py-20">
@@ -189,4 +210,25 @@ export function HomeSections({ sections, categories, featuredProducts }: HomeSec
       </section>
     </div>
   );
+}
+
+
+function ProductSection({id,eyebrow,title,subtitle,products}:{id:string;eyebrow:string;title:string;subtitle:string;products:any[]}){
+  return <section id={id} className="border-y border-stone-200 bg-white py-16 sm:py-20">
+    <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+      <div className="mb-9 flex items-end justify-between gap-5">
+        <div>
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-800">{eyebrow}</p>
+          <h2 className="mt-2 text-3xl font-black tracking-tight text-stone-950 sm:text-4xl">{title}</h2>
+          <p className="mt-2 text-sm text-stone-500">{subtitle}</p>
+        </div>
+        <Link href="/shop" className="hidden items-center gap-1 text-sm font-bold text-emerald-800 sm:inline-flex">
+          Alle producten<ArrowRight className="h-4 w-4" />
+        </Link>
+      </div>
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {products.slice(0, 8).map((product:any)=><ProductCard key={`home-${id}-${product.id}`} product={{...product,unit:"piece"}} />)}
+      </div>
+    </div>
+  </section>;
 }
