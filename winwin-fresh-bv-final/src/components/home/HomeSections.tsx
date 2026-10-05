@@ -187,7 +187,7 @@ export function HomeSections({ sections, categories, featuredProducts, seasonalP
         id="home-seasonal"
         eyebrow={lang === "nl" ? "Vers van het seizoen" : "Fresh This Season"}
         title={lang === "nl" ? "Vers dit seizoen" : "Fresh This Season"}
-        subtitle={lang === "nl" ? "Producten die u hebt geselecteerd لهذا الموسم." : "Products you selected for this season."}
+        subtitle={lang === "nl" ? "Producten die u voor dit seizoen hebt geselecteerd." : "Products you selected for this season."}
         products={seasonalProducts}
       />}
 
