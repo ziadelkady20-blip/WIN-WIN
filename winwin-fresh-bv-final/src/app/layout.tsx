@@ -8,7 +8,7 @@ import { Footer } from "@/components/Footer";
 export const metadata: Metadata = {
   title: "WIN & WIN FRESH BV | Dagverse Groenten en Fruit in Nederland",
   description:
-    "WIN & WIN FRESH BV levert dagelijks verse groenten en fruit van Nederlandse telers en wereldwijde topleveranciers. Verkoop per kg, gekoeld bezorgd, eenvoudig bestellen als gast.",
+    "WIN & WIN FRESH BV levert dagelijks verse groenten en fruit van Nederlandse telers en wereldwijde topleveranciers. Verkoop per stuk, gekoeld bezorgd, eenvoudig bestellen als gast.",
   keywords: [
     "verse groenten",
     "vers fruit",
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "WIN & WIN FRESH BV | Verse groenten en fruit van topkwaliteit",
-    description: "Dagelijks vers ingekocht, verkocht per kg, gekoeld bezorgd aan huis in heel Nederland.",
+    description: "Dagelijks vers ingekocht, per stuk geprijsd en gekoeld bezorgd aan huis in heel Nederland.",
     url: "https://winandwinfresh.nl",
     siteName: "WIN & WIN FRESH BV",
     locale: "nl_NL",
