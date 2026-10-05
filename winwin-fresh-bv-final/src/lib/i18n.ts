@@ -329,6 +329,7 @@ export function formatPrice(amount: number | string, lang: Language = "nl"): str
   return `€${num.toFixed(2)}`;
 }
 
+// All catalog quantities are sold per piece (stuks / pieces).
 export function formatWeight(kg: number | string, lang: Language = "nl"): string {
   const num = typeof kg === "string" ? parseFloat(kg) : kg;
   if (isNaN(num)) return "0";
