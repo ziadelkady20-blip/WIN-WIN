@@ -63,7 +63,7 @@ export async function GET() {
     const topProducts = await db
       .select({
         productName: orderItems.productName,
-        totalSoldKg: sql<number>`round(coalesce(sum(cast(${orderItems.quantity} as numeric)), 0), 1)`,
+        totalSoldPieces: sql<number>`round(coalesce(sum(cast(${orderItems.quantity} as numeric)), 0), 1)`,
         totalSales: sql<number>`round(coalesce(sum(cast(${orderItems.totalPrice} as numeric)), 0), 2)`,
       })
       .from(orderItems)
