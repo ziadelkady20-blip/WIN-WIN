@@ -36,8 +36,7 @@ export function ProductCard({ product }: ProductCardProps) {
   const price = product.salePricePerKg ? parseFloat(String(product.salePricePerKg)) : parseFloat(String(product.pricePerKg));
   const originalPrice = product.salePricePerKg ? parseFloat(String(product.pricePerKg)) : null;
   const isOutOfStock = product.stockStatus === "out_of_stock";
-  const isPiece = product.unit === "piece" || product.unit === "stuk";
-  const unitLabel = isPiece ? (lang === "nl" ? "stuk" : "piece") : (product.unit || "kg");
+  const unitLabel = lang === "nl" ? "stuk" : "piece";
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
