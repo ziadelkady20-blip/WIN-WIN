@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     "WIN & WIN FRESH BV",
     "tomaten",
     "appels",
-    "per kilo",
+    "per stuk",
     "gekoelde bezorging",
     "biologische groenten",
   ],
