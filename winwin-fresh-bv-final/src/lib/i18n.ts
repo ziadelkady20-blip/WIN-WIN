@@ -20,7 +20,7 @@ export const translations = {
     },
     shop: {
       title: "Ons Versassortiment",
-      subtitle: "Dagelijks vers ingekocht, verkocht per kilogram met gegarandeerde versheid.",
+      subtitle: "Dagelijks vers ingekocht, elk product geprijsd per stuk met gegarandeerde versheid.",
       allCategories: "Alle Categorieën",
       filterBy: "Filteren op",
       sortBy: "Sorteren op",
@@ -29,7 +29,7 @@ export const translations = {
       sortPriceDesc: "Prijs: hoog naar laag",
       sortNewest: "Nieuwste oogst",
       sortFeatured: "Uitgelicht",
-      priceRange: "Prijsklasse per kg",
+      priceRange: "Prijsklasse per stuk",
       origin: "Herkomst",
       allOrigins: "Alle herkomsten",
       inStockOnly: "Alleen op voorraad",
@@ -39,7 +39,7 @@ export const translations = {
       noProducts: "Geen verse producten gevonden die aan deze criteria voldoen.",
       resetFilters: "Filters wissen",
       showingResults: "verse producten weergegeven",
-      perKg: "per kg",
+      perKg: "per stuk",
       addToCart: "In winkelmand",
       outOfStock: "Tijdelijk uitverkocht",
       inStock: "Op voorraad",
@@ -52,8 +52,8 @@ export const translations = {
       unitLabel: "Eenheid",
       categoryLabel: "Categorie",
       freshnessPromise: "Gegarandeerd kraakvers binnen 24-48 uur gekoeld geleverd",
-      selectWeight: "Kies hoeveelheid in kg",
-      quantity: "Aantal kilogram",
+      selectWeight: "Kies aantal stuks",
+      quantity: "Aantal stuks",
       totalPrice: "Totaalprijs",
       addToCart: "Toevoegen aan winkelmand",
       addedToCart: "Toegevoegd aan winkelwagen!",
@@ -69,7 +69,7 @@ export const translations = {
       emptyDesc: "Ontdek onze dagverse groenten en fruit en vul uw mand met de beste kwaliteit.",
       startShopping: "Bekijk het versaanbod",
       item: "Product",
-      price: "Prijs / kg",
+      price: "Prijs / stuk",
       quantity: "Gewicht",
       subtotal: "Subtotaal",
       deliveryFee: "Bezorgkosten",
@@ -178,7 +178,7 @@ export const translations = {
     },
     shop: {
       title: "Fresh Produce Assortment",
-      subtitle: "Freshly procured daily, sold per kilogram with guaranteed freshness.",
+      subtitle: "Freshly procured daily, every product priced per piece with guaranteed freshness.",
       allCategories: "All Categories",
       filterBy: "Filter by",
       sortBy: "Sort by",
@@ -187,7 +187,7 @@ export const translations = {
       sortPriceDesc: "Price: High to Low",
       sortNewest: "Newest Harvest",
       sortFeatured: "Featured",
-      priceRange: "Price per kg",
+      priceRange: "Price per piece",
       origin: "Origin",
       allOrigins: "All origins",
       inStockOnly: "In stock only",
@@ -197,7 +197,7 @@ export const translations = {
       noProducts: "No fresh produce found matching your criteria.",
       resetFilters: "Reset filters",
       showingResults: "fresh items found",
-      perKg: "per kg",
+      perKg: "per piece",
       addToCart: "Add to cart",
       outOfStock: "Out of stock",
       inStock: "In stock",
@@ -210,8 +210,8 @@ export const translations = {
       unitLabel: "Unit",
       categoryLabel: "Category",
       freshnessPromise: "Guaranteed crisp & fresh, delivered refrigerated within 24-48 hours",
-      selectWeight: "Select weight in kg",
-      quantity: "Quantity (kg)",
+      selectWeight: "Select quantity",
+      quantity: "Quantity (pieces)",
       totalPrice: "Total Price",
       addToCart: "Add to cart",
       addedToCart: "Added to cart!",
@@ -227,7 +227,7 @@ export const translations = {
       emptyDesc: "Explore our daily fresh produce and fill your basket with top Dutch quality.",
       startShopping: "Browse Fresh Produce",
       item: "Product",
-      price: "Price / kg",
+      price: "Price / piece",
       quantity: "Weight",
       subtotal: "Subtotal",
       deliveryFee: "Delivery Fee",
@@ -331,9 +331,9 @@ export function formatPrice(amount: number | string, lang: Language = "nl"): str
 
 export function formatWeight(kg: number | string, lang: Language = "nl"): string {
   const num = typeof kg === "string" ? parseFloat(kg) : kg;
-  if (isNaN(num)) return "0 kg";
+  if (isNaN(num)) return "0";
   if (lang === "nl") {
-    return `${num.toString().replace(".", ",")} kg`;
+    return `${num.toString().replace(".", ",")} ${lang === "nl" ? "stuks" : "pieces"}`;
   }
-  return `${num} kg`;
+  return `${num} ${lang === "nl" ? "stuks" : "pieces"}`;
 }
