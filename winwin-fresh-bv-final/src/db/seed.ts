@@ -60,10 +60,8 @@ export async function seedDatabase() {
     role: "super_admin",
   }).onConflictDoNothing();
 
-  // One-time cleanup: remove the old demo catalog so the admin can build the real catalog from scratch.
-  // The next commit will disable this cleanup before products are added by the admin.
-  await db.delete(products);
-  await db.delete(categories);
+  // Products and categories are managed exclusively from the admin dashboard.
+  // Never seed or delete catalog data during deployments.
 
   await db.insert(storeSettings).values({
     storeName: "WIN & WIN FRESH BV",
