@@ -175,7 +175,6 @@ function ProductModal({product,categories,onClose,onSaved,api}:{product:any;cate
     ["special","Weekly Special Offers"],
     ["seasonal","Fresh This Season"],
   ] as const;
-  const set=(k:string,v:any)=>setF((x:any)=>({...x,[k]:v}));
   const toggle=(k:string)=>{
     return <label className="flex items-center gap-2 text-xs font-semibold cursor-pointer"><input type="checkbox" checked={!!f[k]} onChange={e=>set(k,e.target.checked)}/>{labels[k]||k}</label>;
   };
