@@ -54,7 +54,7 @@ export async function GET(req: Request) {
       unit: products.unit, mainImage: products.mainImage, additionalImages: products.additionalImages,
       stockQuantity: products.stockQuantity, stockStatus: products.stockStatus, origin: products.origin,
       isFeatured: products.isFeatured, isSeasonal: products.isSeasonal, isOrganic: products.isOrganic, isNew: products.isNew,
-      badges: products.badges, isPublished: products.isPublished, sortOrder: products.sortOrder, nutrition: products.nutrition,
+      badges: products.badges, homepagePlacements: products.homepagePlacements, isPublished: products.isPublished, sortOrder: products.sortOrder, nutrition: products.nutrition,
       createdAt: products.createdAt,
     }).from(products).leftJoin(categories, eq(products.categoryId, categories.id)).where(whereClause).orderBy(orderByClause);
     return NextResponse.json(result.map((p) => ({ ...p, unit: "piece" })));
@@ -71,7 +71,7 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { nameNl, nameEn, descriptionNl, descriptionEn, categoryId, pricePerKg, salePricePerKg, mainImage,
       additionalImages = [], stockQuantity = "100.00", stockStatus = "in_stock", origin = "Nederland",
-      isFeatured = false, isSeasonal = false, isOrganic = false, isNew = false, badges = [], isPublished = true,
+      isFeatured = false, isSeasonal = false, isOrganic = false, isNew = false, badges = [], homepagePlacements = [], isPublished = true,
       sortOrder = 0, nutrition, slug } = body;
     if (!nameNl || !pricePerKg || !mainImage) return NextResponse.json({ error: "Productnaam, prijs per stuk en hoofdafbeelding zijn verplicht" }, { status: 400 });
     const generatedSlug = (slug || nameNl).toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
@@ -81,7 +81,7 @@ export async function POST(req: Request) {
       salePricePerKg: salePricePerKg ? parseFloat(salePricePerKg).toFixed(2) : null, unit: "piece", mainImage,
       additionalImages: Array.isArray(additionalImages) ? additionalImages : [], stockQuantity: parseFloat(stockQuantity).toFixed(0),
       stockStatus, origin, isFeatured: Boolean(isFeatured), isSeasonal: Boolean(isSeasonal), isOrganic: Boolean(isOrganic),
-      isNew: Boolean(isNew), badges: Array.isArray(badges) ? badges : [], isPublished: isPublished !== undefined ? Boolean(isPublished) : true,
+      isNew: Boolean(isNew), badges: Array.isArray(badges) ? badges : [], homepagePlacements: Array.isArray(homepagePlacements) ? homepagePlacements : [], isPublished: isPublished !== undefined ? Boolean(isPublished) : true,
       sortOrder: parseInt(sortOrder || "0", 10), nutrition: nutrition || null, slug: generatedSlug,
     }).returning();
     return NextResponse.json({ ...created, unit: "piece" });
