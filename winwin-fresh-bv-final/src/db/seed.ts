@@ -1,6 +1,5 @@
 import { db } from "./index";
 import { admins, categories, products, deliverySettings, storeSettings } from "./schema";
-import { eq } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 
 const image = (id: string) => `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=900`;
