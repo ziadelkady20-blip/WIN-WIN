@@ -60,45 +60,10 @@ export async function seedDatabase() {
     role: "super_admin",
   }).onConflictDoNothing();
 
-  // Remove the previous demo catalog. Existing order history stays safe because
-  // order_items.product_id uses ON DELETE SET NULL.
+  // One-time cleanup: remove the old demo catalog so the admin can build the real catalog from scratch.
+  // The next commit will disable this cleanup before products are added by the admin.
   await db.delete(products);
   await db.delete(categories);
-
-  const insertedCategories = await db.insert(categories).values([
-    { slug: "peppers", nameNl: "Peppers", nameEn: "Peppers", descriptionNl: "Verse paprika's en pepers.", descriptionEn: "Fresh peppers and chilies.", image: pepperImage, sortOrder: 1, isActive: true },
-    { slug: "vegetables", nameNl: "Groenten", nameEn: "Vegetables", descriptionNl: "Dagverse groenten.", descriptionEn: "Fresh vegetables.", image: vegetableImage, sortOrder: 2, isActive: true },
-    { slug: "fruit", nameNl: "Fruit", nameEn: "Fruit", descriptionNl: "Vers fruit.", descriptionEn: "Fresh fruit.", image: fruitImage, sortOrder: 3, isActive: true },
-  ]).returning();
-
-  const categoryMap = new Map(insertedCategories.map((category) => [category.slug, category.id]));
-
-  await db.insert(products).values(catalog.map(([nameNl, nameEn, category, price, imageUrl], index) => ({
-    slug: slugify(nameNl),
-    nameNl,
-    nameEn,
-    descriptionNl: "",
-    descriptionEn: "",
-    categoryId: categoryMap.get(category),
-    // Legacy DB column name is price_per_kg, but the store now treats this as
-    // the price of one listed unit/piece.
-    pricePerKg: price.toFixed(2),
-    salePricePerKg: null,
-    unit: "piece",
-    mainImage: imageUrl,
-    additionalImages: [],
-    stockQuantity: "999.00",
-    stockStatus: "in_stock",
-    origin: "",
-    isFeatured: index < 8,
-    isSeasonal: false,
-    isOrganic: false,
-    isNew: false,
-    badges: [],
-    isPublished: true,
-    sortOrder: index + 1,
-    nutrition: null,
-  })));
 
   await db.insert(storeSettings).values({
     storeName: "WIN & WIN FRESH BV",
