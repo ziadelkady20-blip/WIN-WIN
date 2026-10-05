@@ -1,4 +1,5 @@
 import { pgTable, serial, text, numeric, integer, boolean, timestamp, jsonb } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 
 export const admins = pgTable("admins", {
   id: serial("id").primaryKey(),
@@ -66,7 +67,7 @@ export const productVariants = pgTable("product_variants", {
 export const orders = pgTable("orders", {
   id: serial("id").primaryKey(),
   orderNumber: text("order_number").notNull().unique(),
-  confirmationToken: text("confirmation_token").notNull().unique(),
+  confirmationToken: text("confirmation_token").notNull().unique().default(sql`gen_random_uuid()::text`),
   customerName: text("customer_name").notNull(),
   customerEmail: text("customer_email").notNull(),
   customerPhone: text("customer_phone").notNull(),
