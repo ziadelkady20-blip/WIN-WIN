@@ -22,11 +22,8 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "WIN & WIN FRESH BV" }],
   icons: {
-    icon: [
-      { url: "/images/logo.svg", type: "image/svg+xml" },
-      { url: "/images/winwin-logo.png", type: "image/png" },
-    ],
-    shortcut: "/images/logo.svg",
+    icon: [{ url: "/images/favicon.svg", type: "image/svg+xml" }],
+    shortcut: "/images/favicon.svg",
     apple: "/images/winwin-logo.png",
   },
   openGraph: {
