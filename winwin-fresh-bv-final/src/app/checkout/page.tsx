@@ -1,0 +1,61 @@
+"use client";
+
+import { FormEvent, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { ArrowLeft, CheckCircle2, LockKeyhole, Truck } from "lucide-react";
+import { useCart } from "@/context/CartContext";
+import { useLanguage } from "@/context/LanguageContext";
+import { formatPrice } from "@/lib/i18n";
+
+export default function CheckoutPage(){
+  const {lang,t}=useLanguage();
+  const cart=useCart();
+  const router=useRouter();
+  const [form,setForm]=useState({firstName:"",lastName:"",email:"",phone:"",street:"",houseNumber:"",postalCode:"",city:"",addressExtra:"",orderNotes:""});
+  const [error,setError]=useState("");
+  const [loading,setLoading]=useState(false);
+
+  useEffect(()=>{ if(cart.items.length===0) router.replace("/cart"); },[cart.items.length,router]);
+
+  const update=(key:string,val:string)=>setForm(f=>({...f,[key]:val}));
+  const submit=async(e:FormEvent)=>{
+    e.preventDefault(); setError("");
+    if(cart.items.length===0) return;
+    setLoading(true);
+    try{
+      const res=await fetch("/api/orders",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+        customerName:`${form.firstName} ${form.lastName}`.trim(), customerEmail:form.email, customerPhone:form.phone,
+        street:form.street, houseNumber:form.houseNumber, postalCode:form.postalCode, city:form.city,
+        addressExtra:form.addressExtra, orderNotes:form.orderNotes,
+        items:cart.items.map(i=>({id:i.id,quantity:i.quantity,unit:i.unit,nameNl:i.nameNl,name:i.nameNl,image:i.image,pricePerKg:i.pricePerKg})),
+        couponCode:cart.appliedCoupon?.code||undefined
+      })});
+      const data=await res.json();
+      if(!res.ok) throw new Error(data.error||"Could not place order");
+      cart.clearCart();
+      router.push(`/order-confirmation?order=${encodeURIComponent(data.order.orderNumber)}&token=${encodeURIComponent(data.order.confirmationToken)}`);
+    }catch(err:any){setError(err.message||"Something went wrong");}finally{setLoading(false);}
+  };
+
+  const Field=({label,name,required=true,type="text",placeholder=""}:{label:string,name:keyof typeof form,required?:boolean,type?:string,placeholder?:string})=><label className="block"><span className="text-xs font-semibold text-stone-700">{label}{required&&<span className="text-red-600"> *</span>}</span><input required={required} type={type} value={form[name]} onChange={e=>update(name,e.target.value)} placeholder={placeholder} className="mt-1.5 w-full h-11 rounded-xl border border-stone-200 bg-white px-3.5 text-sm outline-none focus:border-emerald-700 focus:ring-2 focus:ring-emerald-100"/></label>;
+
+  if(cart.items.length===0) return null;
+  return <div className="min-h-[70vh] bg-[#faf8f2]">
+    <div className="container-page py-10 sm:py-14">
+      <Link href="/cart" className="inline-flex items-center gap-2 text-sm text-stone-500 hover:text-emerald-900"><ArrowLeft className="w-4"/>{t.cart.continueShopping}</Link>
+      <div className="grid lg:grid-cols-[1fr_380px] gap-8 mt-6 items-start">
+        <form onSubmit={submit} className="space-y-5">
+          <div><p className="text-xs uppercase tracking-[.18em] text-emerald-800 font-bold">Guest checkout</p><h1 className="mt-2 text-4xl font-black">{t.checkout.title}</h1><p className="mt-2 text-stone-500">{t.checkout.subtitle}</p></div>
+          {error&&<div className="rounded-xl bg-red-50 border border-red-100 text-red-800 p-4 text-sm">{error}</div>}
+          <section className="surface bg-white p-6 sm:p-7"><h2 className="text-lg font-bold">{t.checkout.customerInfo}</h2><div className="mt-5 grid sm:grid-cols-2 gap-4"><Field label={t.checkout.firstName} name="firstName"/><Field label={t.checkout.lastName} name="lastName"/><Field label={t.checkout.email} name="email" type="email"/><Field label={t.checkout.phone} name="phone" type="tel"/></div></section>
+          <section className="surface bg-white p-6 sm:p-7"><h2 className="text-lg font-bold">{t.checkout.deliveryAddress}</h2><div className="mt-5 grid sm:grid-cols-2 gap-4"><Field label={t.checkout.street} name="street"/><Field label={t.checkout.houseNumber} name="houseNumber"/><Field label={t.checkout.postalCode} name="postalCode" placeholder="1016 EK"/><Field label={t.checkout.city} name="city"/><div className="sm:col-span-2"><Field label={t.checkout.addressExtra} name="addressExtra" required={false}/></div></div></section>
+          <section className="surface bg-white p-6 sm:p-7"><h2 className="text-lg font-bold">{t.checkout.orderNotes}</h2><textarea value={form.orderNotes} onChange={e=>update("orderNotes",e.target.value)} rows={4} placeholder={t.checkout.notesPlaceholder} className="mt-4 w-full rounded-xl border border-stone-200 bg-white p-3.5 text-sm outline-none focus:border-emerald-700 focus:ring-2 focus:ring-emerald-100"/></section>
+          <div className="rounded-xl bg-emerald-50 border border-emerald-100 p-4 flex gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-800 shrink-0"/><div><p className="text-sm font-bold text-emerald-950">{t.checkout.paymentNotice}</p><p className="mt-1 text-xs text-emerald-900/70">{t.checkout.paymentNoticeDesc}</p></div></div>
+          <button disabled={loading} className="w-full h-13 rounded-xl bg-emerald-900 hover:bg-emerald-950 text-white font-bold disabled:opacity-60 flex items-center justify-center gap-2">{loading?t.checkout.placingOrder:t.checkout.placeOrder}<LockKeyhole className="w-4"/></button>
+        </form>
+        <aside className="surface bg-white p-6 lg:sticky lg:top-28"><div className="flex items-center gap-2"><Truck className="w-5 text-emerald-800"/><h2 className="font-bold">{t.checkout.orderSummary}</h2></div><div className="mt-5 space-y-3">{cart.items.map(i=><div key={i.id} className="flex gap-3"><img src={i.image} alt="" className="w-12 h-12 rounded-lg object-cover bg-stone-50"/><div className="min-w-0 flex-1"><p className="text-sm font-semibold truncate">{lang==="nl"?i.nameNl:i.nameEn}</p><p className="text-xs text-stone-500">{i.quantity} kg × {formatPrice(i.pricePerKg,lang)}</p></div><strong className="text-sm">{formatPrice(i.quantity*i.pricePerKg,lang)}</strong></div>)}</div><div className="border-t border-stone-100 mt-5 pt-5 space-y-2 text-sm"><div className="flex justify-between"><span className="text-stone-500">{t.cart.subtotal}</span><strong>{formatPrice(cart.subtotal,lang)}</strong></div><div className="flex justify-between"><span className="text-stone-500">{t.cart.deliveryFee}</span><strong>{cart.deliveryFee===0?t.cart.freeDelivery:formatPrice(cart.deliveryFee,lang)}</strong></div><div className="flex justify-between pt-3 border-t border-stone-100 text-lg"><strong>{t.cart.total}</strong><strong className="text-emerald-900">{formatPrice(cart.total,lang)}</strong></div></div></aside>
+      </div>
+    </div>
+  </div>
+}

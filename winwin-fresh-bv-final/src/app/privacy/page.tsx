@@ -1,0 +1,1 @@
+export default function PrivacyPage(){return <div className="container-page py-16 max-w-3xl"><h1 className="text-4xl font-black">Privacybeleid</h1><p className="mt-5 text-stone-600 leading-7">Deze pagina bevat het privacybeleid van WIN & WIN FRESH BV. Vul hier de definitieve juridische tekst in voordat de website live gaat.</p></div>}
