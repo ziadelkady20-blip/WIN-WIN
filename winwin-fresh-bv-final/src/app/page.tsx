@@ -40,7 +40,7 @@ export default async function HomePage() {
 
   const sections = activeSections.length ? activeSections : fallbackSections;
   const featuredProducts = publishedProducts.filter((p) => p.isFeatured).slice(0, 8);
-  const visibleProducts = featuredProducts.length ? featuredProducts : publishedProducts.slice(0, 8);
+  const visibleProducts = featuredProducts;
   const saleProducts = publishedProducts.filter((p) => p.salePricePerKg !== null).slice(0, 8);
   const seasonalProducts = publishedProducts.filter((p) => p.isSeasonal).slice(0, 8);
 
