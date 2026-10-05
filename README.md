@@ -20,3 +20,6 @@ npm run dev
 ```
 
 Do not commit production secrets. Configure `DATABASE_URL` and admin secrets through environment variables.
+
+
+<!-- deployment sync -->
