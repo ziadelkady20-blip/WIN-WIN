@@ -333,7 +333,7 @@ export function formatWeight(kg: number | string, lang: Language = "nl"): string
   const num = typeof kg === "string" ? parseFloat(kg) : kg;
   if (isNaN(num)) return "0";
   if (lang === "nl") {
-    return `${num.toString().replace(".", ",")} ${lang === "nl" ? "stuks" : "pieces"}`;
+    return `${num.toString().replace(".", ",")} stuks`;
   }
-  return `${num} ${lang === "nl" ? "stuks" : "pieces"}`;
+  return `${num} pieces`;
 }
