@@ -2,38 +2,40 @@ import { db } from "./index";
 import { admins, categories, products, deliverySettings, storeSettings } from "./schema";
 import bcrypt from "bcryptjs";
 
-const pepperImage = "https://images.pexels.com/photos/5701945/pexels-photo-5701945.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=900";
-const vegetableImage = "https://images.pexels.com/photos/9705821/pexels-photo-9705821.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=900";
-const fruitImage = "https://images.pexels.com/photos/5864769/pexels-photo-5864769.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=900";
+const image = (id: string) => `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=900`;
+
+const pepperImage = image("5701945");
+const vegetableImage = image("5622165");
+const fruitImage = image("5864769");
 
 const catalog = [
-  ["Sivri", "Sivri Pepper", "peppers", 1.19, pepperImage],
-  ["Çarli", "Çarli Pepper", "peppers", 1.19, pepperImage],
-  ["Dolma", "Dolma Pepper", "peppers", 1.19, pepperImage],
-  ["Kapia", "Kapia Pepper", "peppers", 1.39, pepperImage],
-  ["Kıl Sivri biber", "Kıl Sivri Pepper", "peppers", 1.69, pepperImage],
-  ["Kılçık biber", "Kılçık Pepper", "peppers", 1.89, pepperImage],
-  ["Üçburun biber", "Üçburun Pepper", "peppers", 1.59, pepperImage],
-  ["Kırmızı Şili biber", "Red Chili Pepper", "peppers", 1.39, pepperImage],
-  ["Yeşil Şili biber", "Green Chili Pepper", "peppers", 1.19, pepperImage],
-  ["Acı Cin(150g)", "Acı Cin Chili (150g)", "peppers", 0.99, pepperImage],
-  ["Macar", "Macar Pepper", "peppers", 1.49, pepperImage],
-  ["Patlıcan", "Eggplant", "vegetables", 1.69, vegetableImage],
-  ["Kabak(D)", "Zucchini (D)", "vegetables", 2.19, vegetableImage],
-  ["Mini Kabak(D)", "Mini Zucchini (D)", "vegetables", 2.99, vegetableImage],
-  ["Acur", "Acur", "vegetables", 2.79, vegetableImage],
-  ["Kelek", "Kelek Melon", "fruit", 2.99, fruitImage],
-  ["Ayşekadin fasulye", "Ayşekadın Green Beans", "vegetables", 2.09, vegetableImage],
-  ["Turplar mix", "Mixed Radish", "vegetables", 2.09, vegetableImage],
-  ["Balkabağı(BOX-kg)", "Pumpkin (BOX-kg)", "vegetables", 1.29, vegetableImage],
-  ["Lahana", "Cabbage", "vegetables", 1.65, vegetableImage],
-  ["Kırkağaç", "Kırkağaç Melon", "fruit", 1.39, fruitImage],
-  ["Nektarin", "Nectarine", "fruit", 1.89, fruitImage],
-  ["Ejder(2 li)", "Dragon Fruit (2 pcs)", "fruit", 2.15, fruitImage],
-  ["Ayva", "Quince", "fruit", 2.49, fruitImage],
-  ["St maria", "St. Maria Pear", "fruit", 2.69, fruitImage],
-  ["Deveci armut", "Deveci Pear", "fruit", 2.59, fruitImage],
-  ["Nar (Maat 9/12)", "Pomegranate (Size 9/12)", "fruit", 2.39, fruitImage],
+  ["Sivri", "Sivri Pepper", "peppers", 1.19, image("3721695")],
+  ["Çarli", "Çarli Pepper", "peppers", 1.19, image("1800247")],
+  ["Dolma", "Dolma Pepper", "peppers", 1.19, image("4943441")],
+  ["Kapia", "Kapia Pepper", "peppers", 1.39, image("18640811")],
+  ["Kıl Sivri biber", "Kıl Sivri Pepper", "peppers", 1.69, image("10682991")],
+  ["Kılçık biber", "Kılçık Pepper", "peppers", 1.89, image("4347039")],
+  ["Üçburun biber", "Üçburun Pepper", "peppers", 1.59, image("6280412")],
+  ["Kırmızı Şili biber", "Red Chili Pepper", "peppers", 1.39, image("15429115")],
+  ["Yeşil Şili biber", "Green Chili Pepper", "peppers", 1.19, image("20088835")],
+  ["Acı Cin(150g)", "Acı Cin Chili (150g)", "peppers", 0.99, image("31025316")],
+  ["Macar", "Macar Pepper", "peppers", 1.49, image("6316520")],
+  ["Patlıcan", "Eggplant", "vegetables", 1.69, image("5701950")],
+  ["Kabak(D)", "Zucchini (D)", "vegetables", 2.19, image("37160129")],
+  ["Mini Kabak(D)", "Mini Zucchini (D)", "vegetables", 2.99, image("36926415")],
+  ["Acur", "Acur", "vegetables", 2.79, image("10111495")],
+  ["Kelek", "Kelek Melon", "fruit", 2.99, image("9469638")],
+  ["Ayşekadin fasulye", "Ayşekadın Green Beans", "vegetables", 2.09, image("30893268")],
+  ["Turplar mix", "Mixed Radish", "vegetables", 2.09, image("29181511")],
+  ["Balkabağı(BOX-kg)", "Pumpkin (BOX-kg)", "vegetables", 1.29, image("4969890")],
+  ["Lahana", "Cabbage", "vegetables", 1.65, image("29679932")],
+  ["Kırkağaç", "Kırkağaç Melon", "fruit", 1.39, image("4943057")],
+  ["Nektarin", "Nectarine", "fruit", 1.89, image("9810909")],
+  ["Ejder(2 li)", "Dragon Fruit (2 pcs)", "fruit", 2.15, image("3691116")],
+  ["Ayva", "Quince", "fruit", 2.49, image("9944539")],
+  ["St maria", "St. Maria Pear", "fruit", 2.69, image("5713980")],
+  ["Deveci armut", "Deveci Pear", "fruit", 2.59, image("10024753")],
+  ["Nar (Maat 9/12)", "Pomegranate (Size 9/12)", "fruit", 2.39, image("29310033")],
 ] as const;
 
 const slugify = (value: string) => value
@@ -71,7 +73,7 @@ export async function seedDatabase() {
 
   const categoryMap = new Map(insertedCategories.map((category) => [category.slug, category.id]));
 
-  await db.insert(products).values(catalog.map(([nameNl, nameEn, category, price, image], index) => ({
+  await db.insert(products).values(catalog.map(([nameNl, nameEn, category, price, imageUrl], index) => ({
     slug: slugify(nameNl),
     nameNl,
     nameEn,
@@ -83,7 +85,7 @@ export async function seedDatabase() {
     pricePerKg: price.toFixed(2),
     salePricePerKg: null,
     unit: "piece",
-    mainImage: image,
+    mainImage: imageUrl,
     additionalImages: [],
     stockQuantity: "999.00",
     stockStatus: "in_stock",
