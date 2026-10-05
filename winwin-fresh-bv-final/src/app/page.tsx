@@ -13,7 +13,7 @@ const fallbackSections = [
   { id: "fallback-delivery", sectionType: "delivery", titleNl: "Vers tot aan uw deur", titleEn: "Freshness delivered to your door", contentNl: "Bestel eenvoudig als gast en ontvang uw verse producten gekoeld aan huis.", contentEn: "Order easily as a guest and receive your fresh products chilled at your doorstep.", sortOrder: 5 },
 ];
 
-const allowedSectionTypes = new Set(["hero", "features", "categories", "featured_products", "delivery"]);
+const allowedSectionTypes = new Set(["hero", "features", "categories", "delivery"]);
 
 export default async function HomePage() {
   let activeSections: any[] = [];
@@ -47,10 +47,5 @@ export default async function HomePage() {
   }
 
   const sections = activeSections.length ? activeSections : fallbackSections;
-  const featuredProducts = publishedProducts.filter((p) => p.isFeatured).slice(0, 8);
-  const visibleProducts = featuredProducts;
-  const saleProducts = publishedProducts.filter((p) => p.salePricePerKg !== null).slice(0, 8);
-  const seasonalProducts = publishedProducts.filter((p) => p.isSeasonal).slice(0, 8);
-
-  return <div className="min-h-screen bg-[#fcfbf7]"><HomeSections sections={sections} categories={activeCategories} featuredProducts={visibleProducts} seasonalProducts={seasonalProducts} saleProducts={saleProducts} /></div>;
+  return <div className="min-h-screen bg-[#fcfbf7]"><HomeSections sections={sections} categories={activeCategories} featuredProducts={[]} seasonalProducts={[]} saleProducts={[]} /></div>;
 }
