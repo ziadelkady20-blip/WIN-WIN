@@ -168,35 +168,30 @@ export function HomeSections({ sections, categories, featuredProducts }: HomeSec
         </div>
       </section>
 
-      {/* PRODUCTS — exactly one */}
-      <section id="home-products" className="border-y border-stone-200 bg-white py-16 sm:py-20">
-        <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
-          <div className="mb-9 flex items-end justify-between gap-5">
-            <div>
-              <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-800">{lang === "nl" ? "Actuele prijslijst" : "Current price list"}</p>
-              <h2 className="mt-2 text-3xl font-black tracking-tight text-stone-950 sm:text-4xl">
-                {t(featuredSection, "title", "Uitgelichte producten", "Featured products")}
-              </h2>
-              <p className="mt-2 text-sm text-stone-500">{lang === "nl" ? "Alle prijzen zijn per stuk." : "All prices are per piece."}</p>
+      {/* FEATURED PRODUCTS — shown only when the admin has explicitly featured products */}
+      {featuredProducts.length > 0 && (
+        <section id="home-products" className="border-y border-stone-200 bg-white py-16 sm:py-20">
+          <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+            <div className="mb-9 flex items-end justify-between gap-5">
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-800">{lang === "nl" ? "Uitgelicht" : "Featured"}</p>
+                <h2 className="mt-2 text-3xl font-black tracking-tight text-stone-950 sm:text-4xl">
+                  {t(featuredSection, "title", "Uitgelichte producten", "Featured products")}
+                </h2>
+                <p className="mt-2 text-sm text-stone-500">{lang === "nl" ? "Door ons geselecteerde producten." : "Products selected by our team."}</p>
+              </div>
+              <Link href="/shop" className="hidden items-center gap-1 text-sm font-bold text-emerald-800 sm:inline-flex">
+                {lang === "nl" ? "Alle producten" : "All products"}<ArrowRight className="h-4 w-4" />
+              </Link>
             </div>
-            <Link href="/shop" className="hidden items-center gap-1 text-sm font-bold text-emerald-800 sm:inline-flex">
-              {lang === "nl" ? "Alle producten" : "All products"}<ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-
-          {featuredProducts.length ? (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {featuredProducts.slice(0, 8).map((product: any) => (
                 <ProductCard key={`product-${product.id}`} product={{ ...product, unit: "piece" }} />
               ))}
             </div>
-          ) : (
-            <div className="rounded-2xl border border-dashed border-stone-300 bg-[#fcfbf7] p-12 text-center text-sm text-stone-500">
-              {lang === "nl" ? "Er zijn momenteel geen producten beschikbaar." : "No products are currently available."}
-            </div>
-          )}
-        </div>
-      </section>
+          </div>
+        </section>
+      )}
 
       {/* DELIVERY CTA — exactly one */}
       <section id="home-delivery" className="bg-[#0a3528] py-16 text-white sm:py-20">
