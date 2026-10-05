@@ -169,18 +169,19 @@ function ProductModal({product,categories,onClose,onSaved,api}:{product:any;cate
   const [f,setF]=useState<any>(product||{nameNl:"",nameEn:"",descriptionNl:"",descriptionEn:"",categoryId:"",pricePerKg:"",salePricePerKg:"",unit:"piece",mainImage:"",additionalImages:[],stockQuantity:"100",stockStatus:"in_stock",origin:"Nederland",isFeatured:false,isSeasonal:false,isOrganic:false,isNew:false,badges:[],homepagePlacements:[],isPublished:true,sortOrder:0});
   const set=(k:string,v:any)=>setF((x:any)=>({...x,[k]:v}));
   const save=async(e:any)=>{e.preventDefault();await api(product?`/api/products/${product.id}`:"/api/products",{method:product?"PUT":"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({...f,additionalImages:typeof f.additionalImages==="string"?f.additionalImages.split("\n").map((x:string)=>x.trim()).filter(Boolean):f.additionalImages})});onSaved()};
-  const toggle=(k:string)=>{
-    const labels:any={isFeatured:"Uitgelicht op homepage",isSeasonal:"Seizoensproduct",isOrganic:"Biologisch",isNew:"Nieuw product",isPublished:"Zichtbaar op website"};
+  const labels:any={isFeatured:"Uitgelicht op homepage",isSeasonal:"Seizoensproduct",isOrganic:"Biologisch",isNew:"Nieuw product",isPublished:"Zichtbaar op website"};
   const placements=[
     ["featured","Featured Favorites"],
     ["special","Weekly Special Offers"],
     ["seasonal","Fresh This Season"],
   ] as const;
+  const set=(k:string,v:any)=>setF((x:any)=>({...x,[k]:v}));
+  const toggle=(k:string)=>{
+    return <label className="flex items-center gap-2 text-xs font-semibold cursor-pointer"><input type="checkbox" checked={!!f[k]} onChange={e=>set(k,e.target.checked)}/>{labels[k]||k}</label>;
+  };
   const togglePlacement=(value:string)=>{
     const current=Array.isArray(f.homepagePlacements)?f.homepagePlacements:[];
     set("homepagePlacements",current.includes(value)?current.filter((x:string)=>x!==value):[...current,value]);
-  };
-    return <label className="flex items-center gap-2 text-xs font-semibold cursor-pointer"><input type="checkbox" checked={!!f[k]} onChange={e=>set(k,e.target.checked)}/>{labels[k]||k}</label>;
   };
   return <Modal onClose={onClose} title={product?"Product bewerken":"Nieuw product"}><form onSubmit={save} className="p-6 space-y-5"><div className="grid sm:grid-cols-2 gap-4">{[["nameNl","Naam Nederlands"],["nameEn","Name English"],["pricePerKg","Prijs per stuk"],["salePricePerKg","Actieprijs per stuk"],["stockQuantity","Voorraad (stuks)"],["origin","Herkomst"],["mainImage","Hoofdafbeelding URL"],["slug","Slug (optioneel)"]].map(([k,l])=><label key={k} className="block"><span className="text-xs font-semibold">{l}</span><input required={["nameNl","pricePerKg","mainImage"].includes(k)} value={f[k]||""} onChange={e=>set(k,e.target.value)} className="mt-1.5 w-full h-10 rounded-lg border border-stone-200 px-3 text-sm"/></label>)}</div><div className="grid sm:grid-cols-2 gap-4"><label><span className="text-xs font-semibold">Categorie</span><select value={f.categoryId||""} onChange={e=>set("categoryId",e.target.value)} className="mt-1.5 w-full h-10 rounded-lg border border-stone-200 px-3 text-sm"><option value="">Geen</option>{categories.map(c=><option key={c.id} value={c.id}>{c.nameNl}</option>)}</select></label><label><span className="text-xs font-semibold">Stock status</span><select value={f.stockStatus||"in_stock"} onChange={e=>set("stockStatus",e.target.value)} className="mt-1.5 w-full h-10 rounded-lg border border-stone-200 px-3 text-sm"><option value="in_stock">In stock</option><option value="low_stock">Low stock</option><option value="out_of_stock">Out of stock</option></select></label></div><div className="grid sm:grid-cols-2 gap-4"><label><span className="text-xs font-semibold">Beschrijving NL</span><textarea value={f.descriptionNl||""} onChange={e=>set("descriptionNl",e.target.value)} rows={4} className="mt-1.5 w-full rounded-lg border border-stone-200 p-3 text-sm"/></label><label><span className="text-xs font-semibold">Description EN</span><textarea value={f.descriptionEn||""} onChange={e=>set("descriptionEn",e.target.value)} rows={4} className="mt-1.5 w-full rounded-lg border border-stone-200 p-3 text-sm"/></label></div><label><span className="text-xs font-semibold">Extra image URLs (1 per line)</span><textarea value={Array.isArray(f.additionalImages)?f.additionalImages.join("\n"):f.additionalImages||""} onChange={e=>set("additionalImages",e.target.value)} rows={3} className="mt-1.5 w-full rounded-lg border border-stone-200 p-3 text-sm"/></label><div className="flex flex-wrap gap-4">{["isFeatured","isSeasonal","isOrganic","isNew","isPublished"].map(k=>toggle(k))}</div>
 <div className="rounded-2xl border border-emerald-100 bg-emerald-50/50 p-4">
