@@ -286,7 +286,7 @@ export function ShopClient({ initialProducts, categories }: ShopClientProps) {
           <div className="pt-4 border-t border-stone-100">
             <div className="flex items-center justify-between text-xs font-bold text-stone-700 mb-2">
               <span>{t.shop.priceRange}</span>
-              <span className="text-emerald-900 font-extrabold">{formatPrice(maxPrice, lang)} / kg</span>
+              <span className="text-emerald-900 font-extrabold">{formatPrice(maxPrice, lang)} / {lang === "nl" ? "stuk" : "piece"}</span>
             </div>
             <input
               type="range"
