@@ -21,6 +21,14 @@ export const metadata: Metadata = {
     "biologische groenten",
   ],
   authors: [{ name: "WIN & WIN FRESH BV" }],
+  icons: {
+    icon: [
+      { url: "/images/logo.svg", type: "image/svg+xml" },
+      { url: "/images/winwin-logo.png", type: "image/png" },
+    ],
+    shortcut: "/images/logo.svg",
+    apple: "/images/winwin-logo.png",
+  },
   openGraph: {
     title: "WIN & WIN FRESH BV | Verse groenten en fruit van topkwaliteit",
     description: "Dagelijks vers ingekocht, verkocht per kg, gekoeld bezorgd aan huis in heel Nederland.",
