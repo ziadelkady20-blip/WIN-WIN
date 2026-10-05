@@ -5,7 +5,10 @@ import { db } from "@/db";
 import { admins } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
-const SECRET = process.env.ADMIN_JWT_SECRET || (process.env.NODE_ENV === "production" ? "" : "dev-only-winwin-admin-secret-change-me");
+// ADMIN_JWT_SECRET is preferred. SEED_ADMIN_PASSWORD is a server-only fallback
+// so the admin login still works when the bootstrap secret is the only secret
+// configured in the deployment environment.
+const SECRET = process.env.ADMIN_JWT_SECRET || process.env.SEED_ADMIN_PASSWORD || (process.env.NODE_ENV === "production" ? "" : "dev-only-winwin-admin-secret-change-me");
 const COOKIE_NAME = "winwin_admin_session";
 
 export interface AdminPayload {
