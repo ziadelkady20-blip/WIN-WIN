@@ -232,10 +232,7 @@ export default function CheckoutPage() {
 
             <div className="mt-5 space-y-3">
               {cart.items.map((item) => {
-                const unitLabel =
-                  item.unit === "piece" || item.unit === "stuk"
-                    ? lang === "nl" ? "stuk" : "piece"
-                    : item.unit;
+                const unitLabel = lang === "nl" ? "stuk" : "piece";
 
                 return (
                   <div key={item.id} className="flex gap-3">
