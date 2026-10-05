@@ -50,7 +50,7 @@ export function ProductCard({ product }: ProductCardProps) {
         nameNl: product.nameNl,
         nameEn: product.nameEn,
         pricePerKg: price,
-        unit: product.unit || "piece",
+        unit: "piece",
         image: product.mainImage,
       },
       selectedQuantity
