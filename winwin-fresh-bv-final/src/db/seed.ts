@@ -1,5 +1,6 @@
 import { db } from "./index";
-import { admins, categories, products, deliverySettings, storeSettings } from "./schema";
+import { admins, categories, products, deliverySettings, storeSettings, homepageSections } from "./schema";
+import { inArray } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 
 const image = (id: string) => `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=900`;
@@ -61,6 +62,25 @@ export async function seedDatabase() {
     passwordHash,
     role: "super_admin",
   }).onConflictDoNothing();
+
+  // Remove the original demo homepage content/products once and keep them out of the live catalog.
+  // These are the products shown in the old Featured Favorites / Weekly Special Offers /
+  // Fresh This Season sections. Admin-added products are not touched.
+  const legacyDemoProductNames = [
+    "Dutch Vine Tomatoes",
+    "Crisp Dutch Cucumber",
+    "Dutch Strawberries",
+    "Navel Oranges",
+    "Dutch Carrots",
+  ];
+  await db.delete(products).where(inArray(products.nameEn, legacyDemoProductNames));
+  await db.delete(homepageSections).where(
+    inArray(homepageSections.titleEn, [
+      "Featured Favorites",
+      "Weekly Special Offers",
+      "Fresh This Season",
+    ])
+  );
 
   // The live catalog is managed from the admin dashboard.
   // On a completely empty catalog, initialize it once with the current supplier list.
