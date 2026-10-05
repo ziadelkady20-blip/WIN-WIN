@@ -47,5 +47,9 @@ export default async function HomePage() {
   }
 
   const sections = activeSections.length ? activeSections : fallbackSections;
-  return <div className="min-h-screen bg-[#fcfbf7]"><HomeSections sections={sections} categories={activeCategories} featuredProducts={[]} seasonalProducts={[]} saleProducts={[]} /></div>;
+  const featuredProducts = publishedProducts.filter((p) => Array.isArray(p.homepagePlacements) && p.homepagePlacements.includes("featured")).slice(0, 8);
+  const saleProducts = publishedProducts.filter((p) => Array.isArray(p.homepagePlacements) && p.homepagePlacements.includes("special")).slice(0, 8);
+  const seasonalProducts = publishedProducts.filter((p) => Array.isArray(p.homepagePlacements) && p.homepagePlacements.includes("seasonal")).slice(0, 8);
+
+  return <div className="min-h-screen bg-[#fcfbf7]"><HomeSections sections={sections} categories={activeCategories} featuredProducts={featuredProducts} seasonalProducts={seasonalProducts} saleProducts={saleProducts} /></div>;
 }
