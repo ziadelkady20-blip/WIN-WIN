@@ -175,7 +175,7 @@ export function HomeSections({ sections, categories, featuredProducts }: HomeSec
             <div>
               <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-800">{lang === "nl" ? "Actuele prijslijst" : "Current price list"}</p>
               <h2 className="mt-2 text-3xl font-black tracking-tight text-stone-950 sm:text-4xl">
-                {t(featuredSection, "title", "Onze producten", "Our products")}
+                {t(featuredSection, "title", "Uitgelichte producten", "Featured products")}
               </h2>
               <p className="mt-2 text-sm text-stone-500">{lang === "nl" ? "Alle prijzen zijn per stuk." : "All prices are per piece."}</p>
             </div>
