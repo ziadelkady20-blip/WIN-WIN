@@ -1,0 +1,48 @@
+name: Patch admin order delete
+on:
+  push:
+    paths:
+      - .github/workflows/add-order-delete.yml
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch admin dashboard
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('winwin-fresh-bv-final/src/components/admin/AdminDashboard.tsx')
+          s = p.read_text()
+          old = '{tab==="orders"&&<OrdersView orders={filteredOrders} query={query} setQuery={setQuery} onStatus={updateOrder}/>}'
+          new = '{tab==="orders"&&<OrdersView orders={filteredOrders} query={query} setQuery={setQuery} onStatus={updateOrder} onDelete={deleteOrder} canDelete={canManage}/>}'
+          if old not in s:
+              raise SystemExit('orders render target not found')
+          s = s.replace(old, new, 1)
+          old = '  async function updateOrder(id:number,status:string){try{await api(`/api/orders/${id}`,{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({status})});showToast("Bestelstatus bijgewerkt");loadAll()}catch(e:any){showToast(e.message)}}\n'
+          new = old + '  async function deleteOrder(id:number){if(!canManage)return;if(!confirm("Deze bestelling definitief verwijderen?"))return;try{await api(`/api/orders/${id}`,{method:"DELETE"});showToast("Bestelling verwijderd");loadAll()}catch(e:any){showToast(e.message)}}\n'
+          if old not in s:
+              raise SystemExit('updateOrder target not found')
+          s = s.replace(old, new, 1)
+          old = 'function OrdersView({orders,query,setQuery,onStatus}:{orders:any[];query:string;setQuery:(x:string)=>void;onStatus:(id:number,status:string)=>void}){'
+          new = 'function OrdersView({orders,query,setQuery,onStatus,onDelete,canDelete}:{orders:any[];query:string;setQuery:(x:string)=>void;onStatus:(id:number,status:string)=>void;onDelete:(id:number)=>void;canDelete:boolean}){'
+          if old not in s:
+              raise SystemExit('OrdersView signature target not found')
+          s = s.replace(old, new, 1)
+          old = '</select></td></tr>)}</tbody></table></div>}</div></div>\n}'
+          new = '</select>{canDelete&&<button onClick={()=>onDelete(o.id)} title="Bestelling verwijderen" className="ml-2 h-9 w-9 rounded-lg border border-red-100 text-red-600 hover:bg-red-50 grid place-items-center"><Trash2 className="w-4"/></button>}</td></tr>)}</tbody></table></div>}</div></div>\n}'
+          if old not in s:
+              raise SystemExit('orders action target not found')
+          s = s.replace(old, new, 1)
+          p.write_text(s)
+          PY
+      - name: Commit patch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add winwin-fresh-bv-final/src/components/admin/AdminDashboard.tsx
+          git diff --cached --quiet && exit 0
+          git commit -m "feat: allow admins to delete orders"
+          git push
