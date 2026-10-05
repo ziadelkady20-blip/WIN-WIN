@@ -27,7 +27,15 @@ export default async function HomePage() {
     ]);
 
     const seenTypes = new Set<string>();
+    const legacyProductTitles = new Set([
+      "Featured Favorites",
+      "Weekly Special Offers",
+      "Fresh This Season",
+    ]);
+
     activeSections = sections.filter((section) => {
+      // Ignore the old demo homepage product sections entirely.
+      if (legacyProductTitles.has(section.titleEn) || legacyProductTitles.has(section.titleNl)) return false;
       if (!allowedSectionTypes.has(section.sectionType) || seenTypes.has(section.sectionType)) return false;
       seenTypes.add(section.sectionType);
       return true;
