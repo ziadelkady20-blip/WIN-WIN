@@ -6,7 +6,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "WIN & WIN FRESH BV | Dagverse Groenten en Fruit in Nederland",
+  title: "WIN & WIN Fresh",
   description:
     "WIN & WIN FRESH BV levert dagelijks verse groenten en fruit van Nederlandse telers en wereldwijde topleveranciers. Verkoop per stuk, gekoeld bezorgd, eenvoudig bestellen als gast.",
   keywords: [
