@@ -36,7 +36,7 @@ export function ProductCard({ product }: ProductCardProps) {
   const price = product.salePricePerKg ? parseFloat(String(product.salePricePerKg)) : parseFloat(String(product.pricePerKg));
   const originalPrice = product.salePricePerKg ? parseFloat(String(product.pricePerKg)) : null;
   const isOutOfStock = product.stockStatus === "out_of_stock";
-  const unitLabel = lang === "nl" ? "stuk" : "piece";
+  // WIN & WIN sells the catalog items by piece. The customer-facing unit is intentionally\n  // normalized here instead of trusting legacy product.unit values such as "kg".\n  const unitLabel = lang === "nl" ? "stuk" : "piece";
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
