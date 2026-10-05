@@ -3,7 +3,7 @@ import { homepageSections, categories, products } from "@/db/schema";
 import { asc, eq } from "drizzle-orm";
 import { HomeSections } from "@/components/home/HomeSections";
 
-export const revalidate = 0;
+export const revalidate = 0; // Always read the latest admin product placements on the homepage
 
 const fallbackSections = [
   { id: "fallback-hero", sectionType: "hero", titleNl: "Verse groenten en fruit, elke dag de beste kwaliteit", titleEn: "Fresh fruits and vegetables, the best quality every day", subtitleNl: "Zorgvuldig geselecteerd en gekoeld bezorgd in heel Nederland.", subtitleEn: "Carefully selected and delivered chilled across the Netherlands.", imageUrl: "https://images.pexels.com/photos/12932209/pexels-photo-12932209.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=900&w=1600", buttonTextNl: "Bekijk producten", buttonTextEn: "Shop products", buttonLink: "/shop", sortOrder: 1 },
