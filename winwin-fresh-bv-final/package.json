@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm run db:push && next build",
+    "build": "npm run db:push && (test -z \"$SEED_ADMIN_PASSWORD\" || npm run db:seed) && next build",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
