@@ -51,7 +51,7 @@ export async function GET(req: Request) {
       descriptionNl: products.descriptionNl, descriptionEn: products.descriptionEn, categoryId: products.categoryId,
       categoryNameNl: categories.nameNl, categoryNameEn: categories.nameEn, categorySlug: categories.slug,
       pricePerKg: products.pricePerKg, salePricePerKg: products.salePricePerKg,
-      unit: products.unit, mainImage: products.mainImage, additionalImages: products.additionalImages,
+      unit: products.unit, pricingType: products.pricingType, packQuantity: products.packQuantity, mainImage: products.mainImage, additionalImages: products.additionalImages,
       stockQuantity: products.stockQuantity, stockStatus: products.stockStatus, origin: products.origin,
       isFeatured: products.isFeatured, isSeasonal: products.isSeasonal, isOrganic: products.isOrganic, isNew: products.isNew,
       badges: products.badges, homepagePlacements: products.homepagePlacements, isPublished: products.isPublished, sortOrder: products.sortOrder, nutrition: products.nutrition,
@@ -69,23 +69,25 @@ export async function POST(req: Request) {
     const session = await getAdminSession();
     if (!session || session.role === "order_manager") return NextResponse.json({ error: "Geen toegang" }, { status: 403 });
     const body = await req.json();
-    const { nameNl, nameEn, descriptionNl, descriptionEn, categoryId, pricePerKg, salePricePerKg, unit = "piece", mainImage,
+    const { nameNl, nameEn, descriptionNl, descriptionEn, categoryId, pricePerKg, salePricePerKg, unit = "piece", pricingType, packQuantity = 1, mainImage,
       additionalImages = [], stockQuantity = "100.00", stockStatus = "in_stock", origin = "Nederland",
       isFeatured = false, isSeasonal = false, isOrganic = false, isNew = false, badges = [], homepagePlacements = [], isPublished = true,
       sortOrder = 0, nutrition, slug } = body;
     if (!nameNl || !pricePerKg || !mainImage) return NextResponse.json({ error: "Productnaam, prijs en hoofdafbeelding zijn verplicht" }, { status: 400 });
-    const pricingUnit = unit === "kg" ? "kg" : "piece";
+    const pricingTypeValue = pricingType === "kg" || pricingType === "pack" ? pricingType : (unit === "kg" ? "kg" : "piece");
+    const pricingUnit = pricingTypeValue;
+    const normalizedPackQuantity = pricingTypeValue === "pack" ? Math.max(2, Math.round(Number(packQuantity) || 1)) : 1;
     const generatedSlug = (slug || nameNl).toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
     const [created] = await db.insert(products).values({
       nameNl, nameEn: nameEn || nameNl, descriptionNl: descriptionNl || "", descriptionEn: descriptionEn || "",
       categoryId: categoryId ? parseInt(categoryId, 10) : null, pricePerKg: parseFloat(pricePerKg).toFixed(2),
-      salePricePerKg: salePricePerKg ? parseFloat(salePricePerKg).toFixed(2) : null, unit: pricingUnit, mainImage,
+      salePricePerKg: salePricePerKg ? parseFloat(salePricePerKg).toFixed(2) : null, unit: pricingUnit, pricingType: pricingTypeValue, packQuantity: normalizedPackQuantity, mainImage,
       additionalImages: Array.isArray(additionalImages) ? additionalImages : [], stockQuantity: parseFloat(stockQuantity).toFixed(pricingUnit === "kg" ? 2 : 0),
       stockStatus, origin, isFeatured: Boolean(isFeatured), isSeasonal: Boolean(isSeasonal), isOrganic: Boolean(isOrganic),
       isNew: Boolean(isNew), badges: Array.isArray(badges) ? badges : [], homepagePlacements: Array.isArray(homepagePlacements) ? homepagePlacements : [], isPublished: isPublished !== undefined ? Boolean(isPublished) : true,
       sortOrder: parseInt(sortOrder || "0", 10), nutrition: nutrition || null, slug: generatedSlug,
     }).returning();
-    return NextResponse.json({ ...created, unit: "piece" });
+    return NextResponse.json(created);
   } catch (error: any) {
     console.error("Create product error:", error);
     if (error?.code === "23505") return NextResponse.json({ error: "Een product met deze slug bestaat al" }, { status: 400 });
