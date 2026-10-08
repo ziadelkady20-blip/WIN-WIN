@@ -21,7 +21,7 @@ export async function GET(req: Request) {
     const ids = allOrders.map(o => o.id);
     const items = ids.length ? await db.select().from(orderItems).where(inArray(orderItems.orderId, ids)) : [];
     const itemsMap: Record<number, any[]> = {};
-    for (const item of items) (itemsMap[item.orderId] ||= []).push({ ...item, unit: "piece" });
+    for (const item of items) (itemsMap[item.orderId] ||= []).push(item);
     return NextResponse.json(allOrders.map(order => ({ ...order, items: itemsMap[order.id] || [] })));
   } catch (error) {
     console.error("Orders GET error:", error);
@@ -49,9 +49,9 @@ export async function POST(req: Request) {
     for (const requestedItem of requested) {
       const product = productMap.get(requestedItem.id);
       if (!product || !product.isPublished || product.stockStatus === "out_of_stock") return NextResponse.json({ error: "Een product in uw winkelmand is niet meer beschikbaar." }, { status: 400 });
-      const quantity = Math.round(requestedItem.quantity);
+      const quantity = product.pricingType === "kg" ? Math.round(requestedItem.quantity * 100) / 100 : Math.round(requestedItem.quantity);
       const stock = Number(product.stockQuantity);
-      if (quantity > stock) return NextResponse.json({ error: `${product.nameNl} heeft nog maar ${stock} stuks op voorraad.` }, { status: 400 });
+      if (quantity > stock) return NextResponse.json({ error: `${product.nameNl} heeft nog maar ${stock} ${product.pricingType === "kg" ? "kg" : product.pricingType === "pack" ? "packs" : "stuks"} op voorraad.` }, { status: 400 });
       const unitPrice = Number(product.salePricePerKg ?? product.pricePerKg);
       const itemTotal = Math.round(quantity * unitPrice * 100) / 100;
       calculatedSubtotal += itemTotal;
@@ -82,8 +82,8 @@ export async function POST(req: Request) {
       const [order] = await tx.insert(orders).values({ orderNumber, confirmationToken, customerName: customerName.trim(), customerEmail: customerEmail.toLowerCase().trim(), customerPhone: customerPhone.trim(), street: street.trim(), houseNumber: houseNumber.trim(), postalCode: postalCode.toUpperCase().trim(), city: city.trim(), country, addressExtra: addressExtra.trim(), orderNotes: orderNotes.trim(), status: "under_review", subtotal: calculatedSubtotal.toFixed(2), deliveryFee: deliveryFee.toFixed(2), discountAmount: discountAmount.toFixed(2), couponCode: appliedCouponCode, total: finalTotal.toFixed(2), paymentStatus: "pending_on_delivery", paymentMethod: "on_delivery" }).returning();
       await tx.insert(orderStatusHistory).values({ orderId: order.id, status: "under_review", note: "Order placed by customer - awaiting review" });
       for (const item of preparedItems) {
-        await tx.insert(orderItems).values({ orderId: order.id, productId: item.product.id, productName: item.product.nameNl, pricePerUnit: item.unitPrice.toFixed(2), quantity: item.quantity.toFixed(0), unit: "piece", totalPrice: item.itemTotal.toFixed(2), productImage: item.product.mainImage });
-        await tx.update(products).set({ stockQuantity: sql`GREATEST(0, ${products.stockQuantity} - ${item.quantity})`, stockStatus: sql`CASE WHEN GREATEST(0, ${products.stockQuantity} - ${item.quantity}) <= 0 THEN 'out_of_stock' WHEN GREATEST(0, ${products.stockQuantity} - ${item.quantity}) <= 20 THEN 'low_stock' ELSE 'in_stock' END`, unit: "piece", updatedAt: new Date() }).where(eq(products.id, item.product.id));
+        await tx.insert(orderItems).values({ orderId: order.id, productId: item.product.id, productName: item.product.nameNl, pricePerUnit: item.unitPrice.toFixed(2), pricingType: item.product.pricingType, packQuantity: item.product.packQuantity || 1, quantity: item.quantity.toString(), unit: item.product.pricingType === "kg" ? "kg" : item.product.pricingType === "pack" ? "pack" : "piece", totalPrice: item.itemTotal.toFixed(2), productImage: item.product.mainImage });
+        await tx.update(products).set({ stockQuantity: sql`GREATEST(0, ${products.stockQuantity} - ${item.quantity})`, stockStatus: sql`CASE WHEN GREATEST(0, ${products.stockQuantity} - ${item.quantity}) <= 0 THEN 'out_of_stock' WHEN GREATEST(0, ${products.stockQuantity} - ${item.quantity}) <= 20 THEN 'low_stock' ELSE 'in_stock' END`, unit: item.product.pricingType === "kg" ? "kg" : item.product.pricingType === "pack" ? "pack" : "piece", updatedAt: new Date() }).where(eq(products.id, item.product.id));
       }
       if (appliedCouponCode) await tx.update(coupons).set({ usedCount: sql`${coupons.usedCount} + 1` }).where(eq(coupons.code, appliedCouponCode));
       const email = customerEmail.toLowerCase().trim();
