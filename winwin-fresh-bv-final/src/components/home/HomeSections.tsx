@@ -198,4 +198,30 @@ export function HomeSections({ sections, categories, featuredProducts, seasonalP
           </div>
         </div>
       </section>
+    </div>
+  );
+}
 
+function ProductSection({id,eyebrow,title,subtitle,products}:{id:string;eyebrow:string;title:string;subtitle:string;products:any[]}) {
+  return (
+    <section id={id} className="border-y border-stone-200 bg-white py-16 sm:py-20">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+        <div className="mb-9 flex items-end justify-between gap-5">
+          <div>
+            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#064e3b]">{eyebrow}</p>
+            <h2 className="mt-2 text-3xl font-black tracking-[-0.03em] text-stone-950 sm:text-4xl">{title}</h2>
+            <p className="mt-2 text-sm text-stone-500">{subtitle}</p>
+          </div>
+          <Link href="/shop" className="hidden items-center gap-2 text-sm font-bold text-[#064e3b] sm:inline-flex">
+            Alle producten <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {products.slice(0, 8).map((product:any) => (
+            <ProductCard key={`home-${id}-${product.id}`} product={{...product, unit:"piece"}} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
