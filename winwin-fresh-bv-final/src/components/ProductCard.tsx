@@ -67,12 +67,12 @@ export function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <div className="group relative flex flex-col bg-white rounded-2xl border border-stone-200/80 hover:border-emerald-700/30 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-stone-200/50 overflow-hidden">
-      <Link href={`/product/${product.slug}`} className="relative aspect-[1.15/1] w-full overflow-hidden bg-[#f5f3eb] block">
+    <div className="group relative flex flex-col overflow-hidden rounded-2xl border border-stone-200/80 bg-white transition-all duration-300 hover:-translate-y-1 hover:border-emerald-800/20 hover:shadow-[0_18px_45px_rgba(6,78,59,0.09)]">
+      <Link href={`/product/${product.slug}`} className="relative aspect-[1.18/1] w-full overflow-hidden bg-[#f4f3ed] block">
         <img
           src={product.mainImage}
           alt={name}
-          className="h-full w-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+          className="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-[1.035]"
           loading="lazy"
         />
         <div className="absolute top-2.5 left-2.5 flex flex-wrap gap-1.5 z-10">
@@ -93,31 +93,31 @@ export function ProductCard({ product }: ProductCardProps) {
         )}
       </Link>
 
-      <div className="flex flex-col flex-1 p-4 sm:p-4.5">
-        <Link href={`/product/${product.slug}`} className="group-hover:text-emerald-800 transition-colors">
-          <h3 className="font-semibold text-stone-900 text-base leading-snug line-clamp-1">{name}</h3>
+      <div className="flex flex-1 flex-col p-4.5 sm:p-5">
+        <Link href={`/product/${product.slug}`} className="transition-colors group-hover:text-emerald-800">
+          <h3 className="line-clamp-2 text-[15px] font-extrabold leading-5 text-stone-900">{name}</h3>
         </Link>
 
-        <div className="mt-1.5 flex items-baseline gap-2">
-          <span className="text-lg font-bold text-emerald-900">
+        <div className="mt-2 flex items-baseline gap-2">
+          <span className="text-[19px] font-black tracking-tight text-[#064e3b]">
             {formatPrice(price, lang)}
             <span className="text-xs font-normal text-stone-500 ml-1">/{unitLabel}</span>
           </span>
           {originalPrice && <span className="text-xs text-stone-400 line-through">{formatPrice(originalPrice, lang)}</span>}
         </div>
 
-        <div className="mt-4 pt-3 border-t border-stone-100 flex items-center gap-2">
-          <div className="flex items-center border border-stone-200 rounded-lg bg-stone-50/70 p-0.5">
+        <div className="mt-5 flex items-center gap-2 border-t border-stone-100 pt-4">
+          <div className="flex items-center rounded-xl border border-stone-200 bg-stone-50/80 p-0.5">
             <button
               type="button"
               onClick={(e) => handleQuantityStep(-1, e)}
               disabled={selectedQuantity <= 1 || isOutOfStock}
-              className="w-7 h-7 flex items-center justify-center text-stone-600 hover:text-stone-900 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white rounded transition-colors"
+              className="flex h-7 w-7 items-center justify-center rounded-lg text-stone-600 transition-colors hover:bg-white hover:text-stone-900 disabled:cursor-not-allowed disabled:opacity-30"
               title={lang === "nl" ? "Minder stuks" : "Fewer pieces"}
             >
               <Minus className="w-3 h-3" />
             </button>
-            <span className="w-14 text-center text-xs font-semibold text-stone-800 tabular-nums">
+            <span className="w-14 text-center text-[11px] font-bold text-stone-800 tabular-nums">
               {selectedQuantity} {unitLabel}
             </span>
             <button
