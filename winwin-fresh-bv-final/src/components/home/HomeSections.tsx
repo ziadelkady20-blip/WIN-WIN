@@ -272,7 +272,7 @@ function ProductSection({id,eyebrow,title,subtitle,products}:{id:string;eyebrow:
         </div>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {products.slice(0, 8).map((product:any) => (
-            <ProductCard key={`home-${id}-${product.id}`} product={{...product, unit:"piece"}} />
+            <ProductCard key={`home-${id}-${product.id}`} product={{...product, unit:product.unit === "kg" ? "kg" : "piece"}} />
           ))}
         </div>
       </div>
