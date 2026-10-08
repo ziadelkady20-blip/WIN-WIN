@@ -13,7 +13,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
       id: products.id, slug: products.slug, nameNl: products.nameNl, nameEn: products.nameEn,
       descriptionNl: products.descriptionNl, descriptionEn: products.descriptionEn, categoryId: products.categoryId,
       categoryNameNl: categories.nameNl, categoryNameEn: categories.nameEn, categorySlug: categories.slug,
-      pricePerKg: products.pricePerKg, salePricePerKg: products.salePricePerKg, unit: products.unit,
+      pricePerKg: products.pricePerKg, salePricePerKg: products.salePricePerKg, unit: products.unit, pricingType: products.pricingType, packQuantity: products.packQuantity,
       mainImage: products.mainImage, additionalImages: products.additionalImages, stockQuantity: products.stockQuantity,
       stockStatus: products.stockStatus, origin: products.origin, isFeatured: products.isFeatured, isSeasonal: products.isSeasonal,
       isOrganic: products.isOrganic, isNew: products.isNew, badges: products.badges, homepagePlacements: products.homepagePlacements, isPublished: products.isPublished,
@@ -36,13 +36,15 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     if (isNaN(prodId)) return NextResponse.json({ error: "Ongeldig product ID" }, { status: 400 });
     const body = await req.json();
     const { nameNl, nameEn, descriptionNl, descriptionEn, categoryId, pricePerKg, salePricePerKg, unit = "piece", mainImage,
-      additionalImages, stockQuantity, stockStatus, origin, isFeatured, isSeasonal, isOrganic, isNew, badges, homepagePlacements,
+      additionalImages, stockQuantity, stockStatus, origin, isFeatured, isSeasonal, isOrganic, isNew, badges, homepagePlacements, pricingType, packQuantity,
       isPublished, sortOrder, nutrition, slug } = body;
-    const pricingUnit = unit === "kg" ? "kg" : "piece";
+    const pricingTypeValue = pricingType === "kg" || pricingType === "pack" ? pricingType : (unit === "kg" ? "kg" : "piece");
+    const pricingUnit = pricingTypeValue;
+    const normalizedPackQuantity = pricingTypeValue === "pack" ? Math.max(2, Math.round(Number(packQuantity) || 1)) : 1;
     const [updated] = await db.update(products).set({
       nameNl, nameEn: nameEn || nameNl, descriptionNl: descriptionNl || "", descriptionEn: descriptionEn || "",
       categoryId: categoryId ? parseInt(categoryId, 10) : null, pricePerKg: pricePerKg ? parseFloat(pricePerKg).toFixed(2) : undefined,
-      salePricePerKg: salePricePerKg ? parseFloat(salePricePerKg).toFixed(2) : null, unit: pricingUnit, mainImage,
+      salePricePerKg: salePricePerKg ? parseFloat(salePricePerKg).toFixed(2) : null, unit: pricingUnit, pricingType: pricingTypeValue, packQuantity: normalizedPackQuantity, mainImage,
       additionalImages: Array.isArray(additionalImages) ? additionalImages : [], stockQuantity: stockQuantity ? parseFloat(stockQuantity).toFixed(pricingUnit === "kg" ? 2 : 0) : undefined,
       stockStatus: stockStatus || "in_stock", origin: origin || "Nederland", isFeatured: Boolean(isFeatured), isSeasonal: Boolean(isSeasonal),
       isOrganic: Boolean(isOrganic), isNew: Boolean(isNew), badges: Array.isArray(badges) ? badges : [], homepagePlacements: Array.isArray(homepagePlacements) ? homepagePlacements : [],
