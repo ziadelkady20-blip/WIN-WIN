@@ -35,10 +35,10 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     const prodId = parseInt(id, 10);
     if (isNaN(prodId)) return NextResponse.json({ error: "Ongeldig product ID" }, { status: 400 });
     const body = await req.json();
-    const pricingUnit = unit === "kg" ? "kg" : "piece";
     const { nameNl, nameEn, descriptionNl, descriptionEn, categoryId, pricePerKg, salePricePerKg, unit = "piece", mainImage,
       additionalImages, stockQuantity, stockStatus, origin, isFeatured, isSeasonal, isOrganic, isNew, badges, homepagePlacements,
       isPublished, sortOrder, nutrition, slug } = body;
+    const pricingUnit = unit === "kg" ? "kg" : "piece";
     const [updated] = await db.update(products).set({
       nameNl, nameEn: nameEn || nameNl, descriptionNl: descriptionNl || "", descriptionEn: descriptionEn || "",
       categoryId: categoryId ? parseInt(categoryId, 10) : null, pricePerKg: pricePerKg ? parseFloat(pricePerKg).toFixed(2) : undefined,
