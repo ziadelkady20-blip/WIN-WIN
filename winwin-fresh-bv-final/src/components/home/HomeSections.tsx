@@ -13,9 +13,6 @@ interface HomeSectionsProps {
   saleProducts: any[];
 }
 
-const FALLBACK_HERO_IMAGE =
-  "https://images.pexels.com/photos/12932209/pexels-photo-12932209.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=1800&q=85";
-
 export function HomeSections({ sections, categories, featuredProducts, seasonalProducts = [], saleProducts = [] }: HomeSectionsProps) {
   const { lang } = useLanguage();
 
