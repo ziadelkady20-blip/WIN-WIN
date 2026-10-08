@@ -36,7 +36,8 @@ export function ProductCard({ product }: ProductCardProps) {
   const price = product.salePricePerKg ? parseFloat(String(product.salePricePerKg)) : parseFloat(String(product.pricePerKg));
   const originalPrice = product.salePricePerKg ? parseFloat(String(product.pricePerKg)) : null;
   const isOutOfStock = product.stockStatus === "out_of_stock";
-  const unitLabel = lang === "nl" ? "stuk" : "piece";
+  const isKg = product.unit === "kg";
+  const unitLabel = isKg ? "kg" : (lang === "nl" ? "stuk" : "piece");
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -50,7 +51,7 @@ export function ProductCard({ product }: ProductCardProps) {
         nameNl: product.nameNl,
         nameEn: product.nameEn,
         pricePerKg: price,
-        unit: "piece",
+        unit: product.unit === "kg" ? "kg" : "piece",
         image: product.mainImage,
       },
       selectedQuantity
@@ -113,7 +114,7 @@ export function ProductCard({ product }: ProductCardProps) {
               onClick={(e) => handleQuantityStep(-1, e)}
               disabled={selectedQuantity <= 1 || isOutOfStock}
               className="flex h-7 w-7 items-center justify-center rounded-lg text-stone-600 transition-colors hover:bg-white hover:text-stone-900 disabled:cursor-not-allowed disabled:opacity-30"
-              title={lang === "nl" ? "Minder stuks" : "Fewer pieces"}
+              title={isKg ? (lang === "nl" ? "Minder kg" : "Fewer kg") : (lang === "nl" ? "Minder stuks" : "Fewer pieces")}
             >
               <Minus className="w-3 h-3" />
             </button>
@@ -125,7 +126,7 @@ export function ProductCard({ product }: ProductCardProps) {
               onClick={(e) => handleQuantityStep(1, e)}
               disabled={isOutOfStock}
               className="w-7 h-7 flex items-center justify-center text-stone-600 hover:text-stone-900 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white rounded transition-colors"
-              title={lang === "nl" ? "Meer stuks" : "More pieces"}
+              title={isKg ? (lang === "nl" ? "Meer kg" : "More kg") : (lang === "nl" ? "Meer stuks" : "More pieces")}
             >
               <Plus className="w-3 h-3" />
             </button>
