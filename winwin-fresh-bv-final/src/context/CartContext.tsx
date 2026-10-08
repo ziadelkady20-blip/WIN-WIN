@@ -9,6 +9,8 @@ export interface CartItem {
   nameEn: string;
   pricePerKg: number;
   unit: string;
+  pricingType: "piece" | "kg" | "pack";
+  packQuantity: number;
   image: string;
   quantity: number;
 }
@@ -55,7 +57,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       const savedCart = localStorage.getItem("winwin_cart");
       if (savedCart) {
         const parsed = JSON.parse(savedCart);
-        setItems(Array.isArray(parsed) ? parsed.map((item) => ({ ...item, unit: item.unit === "kg" ? "kg" : "piece" })) : []);
+        setItems(Array.isArray(parsed) ? parsed.map((item) => ({ ...item, pricingType: item.pricingType === "kg" || item.pricingType === "pack" ? item.pricingType : (item.unit === "kg" ? "kg" : "piece"), packQuantity: Number(item.packQuantity) || 1, unit: item.unit === "kg" ? "kg" : item.pricingType === "pack" ? "pack" : "piece" })) : []);
       }
       const savedCoupon = localStorage.getItem("winwin_coupon");
       if (savedCoupon) setAppliedCoupon(JSON.parse(savedCoupon));
@@ -90,11 +92,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       if (existing) {
         return prev.map((item) =>
           item.id === product.id
-            ? { ...item, quantity: Math.max(1, Math.round(item.quantity + quantity)) }
+            ? { ...item, quantity: Math.max(1, item.unit === "kg" ? Math.round((item.quantity + quantity) * 100) / 100 : Math.round(item.quantity + quantity)) }
             : item
         );
       }
-      return [...prev, { ...product, quantity: Math.max(1, Math.round(quantity)) }];
+      return [...prev, { ...product, quantity: Math.max(0.01, item.unit === "kg" ? Math.round(quantity * 100) / 100 : Math.round(quantity)) }];
     });
   };
 
