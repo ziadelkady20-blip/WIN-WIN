@@ -55,7 +55,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       const savedCart = localStorage.getItem("winwin_cart");
       if (savedCart) {
         const parsed = JSON.parse(savedCart);
-        setItems(Array.isArray(parsed) ? parsed.map((item) => ({ ...item, unit: "piece" })) : []);
+        setItems(Array.isArray(parsed) ? parsed.map((item) => ({ ...item, unit: item.unit === "kg" ? "kg" : "piece" })) : []);
       }
       const savedCoupon = localStorage.getItem("winwin_coupon");
       if (savedCoupon) setAppliedCoupon(JSON.parse(savedCoupon));
