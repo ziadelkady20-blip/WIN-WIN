@@ -142,8 +142,23 @@ export function ShopClient({ initialProducts, categories }: ShopClientProps) {
 
   return (
     <main className="min-h-screen bg-[#f3efe5] text-[#17382b]">
-      <section className="border-b border-[#ddd7ca] bg-[#f7f3e9]">
-        <div className="mx-auto max-w-[1540px] px-5 py-8 sm:px-8 lg:px-10 lg:py-10">
+      <section className="border-b border-[#d9d3c4] bg-[#f7f3e9]">
+        <div className="relative mx-auto max-w-[1540px] overflow-hidden px-5 py-8 sm:px-8 lg:px-10 lg:py-9">
+          <div className="pointer-events-none absolute -right-16 -top-24 h-72 w-72 rounded-full border-[26px] border-[#e3ddd0]/80" />
+          <div className="pointer-events-none absolute right-24 top-8 h-36 w-36 rounded-full bg-[#e7e1d4]/80 blur-2xl" />
+          <div className="pointer-events-none absolute right-8 bottom-[-60px] h-52 w-52 rounded-full border-[18px] border-[#e9e3d7]/80" />
+          <div className="relative">
+            <h1 className="max-w-5xl font-serif text-[46px] font-semibold leading-[0.95] tracking-[-0.045em] text-[#17382b] sm:text-[58px] lg:text-[72px]">
+              {lang === "nl" ? <>Wekelijkse <em className="text-[#b51d22]">verse</em> aankomsten</> : <>Weekly <em className="text-[#b51d22]">fresh</em> arrivals</>}
+            </h1>
+            <p className="mt-3 text-[10px] font-bold uppercase tracking-[0.32em] text-[#716c63] sm:text-[11px]">
+              QUALITY FRESH PRODUCE · DIRECT SUPPLY · FOR PROFESSIONALS
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <div className="mx-auto max-w-[1540px] px-5 py-8 sm:px-8 lg:px-10 lg:py-10">
           <div className="relative overflow-hidden rounded-[26px] border border-[#e2ddcf] bg-[#fbf8ef] px-6 py-8 sm:px-10 lg:px-14 lg:py-10">
             <div className="pointer-events-none absolute -right-12 -top-20 h-72 w-72 rounded-full border-[28px] border-[#d8dfd3]/70" />
             <div className="pointer-events-none absolute right-28 top-4 h-20 w-20 rounded-full bg-[#e6e5dc]/70 blur-xl" />
@@ -163,8 +178,8 @@ export function ShopClient({ initialProducts, categories }: ShopClientProps) {
       </section>
 
       <div className="mx-auto max-w-[1540px] px-5 py-8 sm:px-8 lg:px-10 lg:py-10">
-        <div className="mb-7 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div className="relative w-full max-w-xl">
+        <div className="mb-5 flex items-center justify-end gap-3">
+          <div className="relative hidden w-full max-w-xl lg:hidden">
             <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#777b76]" />
             <input
               value={searchQuery}
@@ -205,9 +220,9 @@ export function ShopClient({ initialProducts, categories }: ShopClientProps) {
           </div>
         )}
 
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[250px_minmax(0,1fr)]">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[250px_minmax(0,1fr)]">
           <aside className="hidden lg:block">
-            <div className="sticky top-24 rounded-2xl border border-[#ddd7ca] bg-[#fbf9f3] p-5">
+            <div className="sticky top-24 rounded-none border-r border-[#d9d3c4] bg-[#f3efe5] p-5">
               <div className="mb-5 flex items-center justify-between border-b border-[#e2dccf] pb-4">
                 <div className="flex items-center gap-2">
                   <SlidersHorizontal className="h-4 w-4 text-[#2a6746]" />
@@ -271,15 +286,15 @@ export function ShopClient({ initialProducts, categories }: ShopClientProps) {
           </aside>
 
           <section>
-            <div className="mb-4 flex items-end justify-between">
+            <div className="mb-3 flex items-end justify-between border-b border-[#ddd7ca] pb-3">
               <div>
                 <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#7b8077]">{lang === "nl" ? "Vers assortiment" : "Fresh selection"}</p>
-                <h2 className="mt-1 font-serif text-3xl font-bold tracking-tight text-[#18382b] sm:text-4xl">{lang === "nl" ? "Groenten & fruit" : "Fresh produce"}</h2>
+                <h2 className="mt-1 font-serif text-2xl font-bold tracking-tight text-[#17382b] sm:text-3xl">{lang === "nl" ? "Groenten & fruit" : "Fresh produce"}</h2>
               </div>
               <span className="text-xs font-semibold text-[#7b8077]">{filteredProducts.length} {t.shop.showingResults}</span>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               {filteredProducts.length > 0 ? filteredProducts.map((product) => {
                 const price = product.salePricePerKg ? parseFloat(product.salePricePerKg) : parseFloat(product.pricePerKg);
                 const original = product.salePricePerKg ? parseFloat(product.pricePerKg) : null;
@@ -290,8 +305,8 @@ export function ShopClient({ initialProducts, categories }: ShopClientProps) {
                 const desc = lang === "nl" ? product.descriptionNl : product.descriptionEn || product.descriptionNl;
 
                 return (
-                  <article key={product.id} className="group grid grid-cols-[105px_minmax(0,1fr)] gap-4 rounded-2xl border border-[#e1dbd0] bg-white p-3 shadow-[0_4px_20px_rgba(32,59,46,0.035)] transition hover:border-[#c4d0c7] hover:shadow-[0_10px_30px_rgba(32,59,46,0.07)] sm:grid-cols-[205px_minmax(0,1fr)_220px] sm:gap-5 sm:p-4 lg:grid-cols-[230px_minmax(0,1fr)_300px]">
-                    <a href={`/product/${product.slug}`} className="relative block h-[105px] overflow-hidden rounded-xl bg-[#ebe6da] sm:h-[138px] lg:h-[150px]">
+                  <article key={product.id} className="group grid grid-cols-[105px_minmax(0,1fr)] gap-4 rounded-[10px] border border-[#e4dfd5] bg-white p-2.5 shadow-none transition hover:border-[#c8d0c8] hover:shadow-[0_6px_18px_rgba(32,59,46,0.06)] sm:grid-cols-[290px_minmax(0,1fr)_280px] sm:gap-5 sm:p-2.5 lg:grid-cols-[290px_minmax(0,1fr)_290px]">
+                    <a href={`/product/${product.slug}`} className="relative block h-[112px] overflow-hidden rounded-[8px] bg-[#ebe6da] sm:h-[112px] lg:h-[116px]">
                       <img src={product.mainImage} alt={name} className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" loading="lazy" />
                       {product.badges?.length > 0 && <span className="absolute left-2 top-2 rounded-full bg-white/95 px-2 py-1 text-[9px] font-black tracking-wider text-[#1d6546] shadow-sm">{product.badges[0]}</span>}
                     </a>
@@ -299,12 +314,12 @@ export function ShopClient({ initialProducts, categories }: ShopClientProps) {
                     <div className="min-w-0 py-1 sm:py-2">
                       <a href={`/product/${product.slug}`} className="block">
                         <div className="flex flex-wrap items-center gap-2">
-                          <h3 className="font-serif text-xl font-bold leading-tight text-[#183e2f] sm:text-2xl">{name}</h3>
+                          <h3 className="font-serif text-xl font-bold leading-tight text-[#17382b] sm:text-[25px]">{name}</h3>
                           <span className="rounded-md bg-[#eeeae0] px-2 py-1 text-[10px] font-bold text-[#6e756f]">{unit}</span>
                         </div>
                         <p className="mt-2 line-clamp-2 text-xs leading-5 text-[#707a74] sm:text-sm">{desc || (lang === "nl" ? "Vers, zorgvuldig geselecteerd en direct geleverd." : "Fresh, carefully selected and delivered directly.")}</p>
                       </a>
-                      <div className="mt-4 flex items-center gap-2 text-xs font-semibold text-[#39764f]">
+                      <div className="mt-3 flex items-center gap-2 text-xs font-semibold text-[#39764f]">
                         <CircleCheck className="h-4 w-4 fill-[#dceee0] text-[#2f8b58]" />
                         {out ? t.shop.outOfStock : t.shop.inStock}
                       </div>
@@ -313,7 +328,7 @@ export function ShopClient({ initialProducts, categories }: ShopClientProps) {
                     <div className="col-span-2 flex items-end justify-between gap-3 border-t border-[#e9e4d8] pt-3 sm:col-span-1 sm:flex-col sm:items-end sm:justify-center sm:border-t-0 sm:border-l sm:pl-5 lg:pl-7">
                       <div className="text-right">
                         <div className="flex items-baseline justify-end gap-2">
-                          <span className="text-2xl font-black tracking-tight text-[#b51d22] sm:text-3xl">{formatPrice(price, lang)}</span>
+                          <span className="text-2xl font-black tracking-tight text-[#b51d22] sm:text-[29px]">{formatPrice(price, lang)}</span>
                           {original && <span className="text-xs text-[#999b96] line-through">{formatPrice(original, lang)}</span>}
                         </div>
                         <span className="text-[11px] font-medium text-[#858982]">per {unit}</span>
