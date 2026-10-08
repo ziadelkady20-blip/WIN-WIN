@@ -122,7 +122,7 @@ export function HomeSections({ sections, categories, featuredProducts, seasonalP
                 <div
                   key={`hero-orbit-${product.id}`}
                   className="winwin-orbit absolute left-1/2 top-1/2 h-[300px] w-[300px] -translate-x-1/2 -translate-y-1/2 sm:h-[390px] sm:w-[390px] lg:h-[470px] lg:w-[470px]"
-                  style={{ "--orbit-radius": "150px", animation: `winwin-orbit ${18 + index * 1.5}s linear infinite`, animationDelay: `-${index * 2}s` } as React.CSSProperties}
+                  style={{ animation: `winwin-orbit ${18 + index * 1.5}s linear infinite`, animationDelay: `-${index * 2}s` }}
                 >
                   <div
                     className="absolute left-1/2 top-0 h-16 w-16 -translate-x-1/2 -translate-y-1/2 sm:h-20 sm:w-20 lg:h-24 lg:w-24"
