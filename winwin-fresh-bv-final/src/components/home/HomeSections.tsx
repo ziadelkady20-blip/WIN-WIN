@@ -51,36 +51,90 @@ export function HomeSections({ sections, categories, featuredProducts, seasonalP
 
   return (
     <div className="bg-[#fcfbf7]">
-      {/* HERO — text-first, no AI imagery */}
-      <section id="home-hero" className="relative overflow-hidden bg-[#064e3b] text-white">
-        <div aria-hidden="true" className="absolute inset-0 opacity-[0.07] [background-image:linear-gradient(rgba(255,255,255,.8)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.8)_1px,transparent_1px)] [background-size:44px_44px]" />
-        <div aria-hidden="true" className="absolute -right-24 -top-24 h-72 w-72 rounded-full border-[40px] border-emerald-300/10" />
-        <div className="relative mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-24 lg:px-10 lg:py-28">
-          <div className="max-w-4xl">
-            <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.2em] text-emerald-100">
+      {/* HERO — clean editorial layout with a subtle product orbit */}
+      <section id="home-hero" className="relative overflow-hidden bg-[#f7f6f0] text-[#12352b]">
+        <style jsx>{`
+          @keyframes winwin-orbit {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+          }
+          @keyframes winwin-counter {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(-360deg); }
+          }
+          @media (prefers-reduced-motion: reduce) {
+            .winwin-orbit, .winwin-counter { animation: none !important; }
+          }
+        `}</style>
+
+        <div className="mx-auto grid min-h-[680px] max-w-7xl items-center gap-10 px-5 py-16 sm:px-8 lg:grid-cols-[0.92fr_1.08fr] lg:px-10 lg:py-20">
+          <div className="relative z-20 max-w-2xl">
+            <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-[#064e3b]/10 bg-white px-4 py-2 text-[11px] font-black uppercase tracking-[0.2em] text-[#064e3b] shadow-sm">
               <Leaf className="h-4 w-4" />
               WIN &amp; WIN FRESH
             </div>
-            <h1 className="max-w-4xl text-5xl font-black leading-[0.98] tracking-[-0.045em] sm:text-6xl lg:text-8xl">
+
+            <h1 className="max-w-2xl text-5xl font-black leading-[0.96] tracking-[-0.055em] text-[#10372c] sm:text-6xl lg:text-[76px]">
               {t(hero, "title", "Verse groenten en fruit, elke dag de beste kwaliteit", "Fresh fruits and vegetables, the best quality every day")}
             </h1>
-            <p className="mt-7 max-w-2xl text-base leading-8 text-emerald-50/75 sm:text-lg">
+
+            <p className="mt-7 max-w-xl text-base leading-8 text-stone-600 sm:text-lg">
               {t(hero, "subtitle", "Zorgvuldig geselecteerd en gekoeld bezorgd in heel Nederland.", "Carefully selected and delivered chilled across the Netherlands.")}
             </p>
+
             <div className="mt-9 flex flex-wrap gap-3">
-              <Link href={hero?.buttonLink || "/shop"} className="group inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3.5 text-sm font-extrabold text-[#064e3b] shadow-sm transition hover:-translate-y-0.5 hover:bg-emerald-50">
+              <Link href={hero?.buttonLink || "/shop"} className="group inline-flex items-center gap-2 rounded-xl bg-[#064e3b] px-6 py-3.5 text-sm font-extrabold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-[#053f31]">
                 {t(hero, "buttonText", "Bekijk producten", "Shop products")}
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
-              <Link href="/categories" className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-transparent px-6 py-3.5 text-sm font-bold text-white transition hover:bg-white/10">
+              <Link href="/categories" className="inline-flex items-center gap-2 rounded-xl border border-[#064e3b]/20 bg-white px-6 py-3.5 text-sm font-bold text-[#064e3b] transition hover:-translate-y-0.5 hover:border-[#064e3b]/40">
                 {lang === "nl" ? "Ontdek categorieën" : "Explore categories"}
               </Link>
             </div>
-            <div className="mt-12 flex flex-wrap gap-x-8 gap-y-3 border-t border-white/15 pt-6 text-sm font-medium text-emerald-50/75">
-              <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-300" />{lang === "nl" ? "Per stuk geprijsd" : "Priced per piece"}</span>
-              <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-300" />{lang === "nl" ? "Gast bestellen" : "Guest checkout"}</span>
-              <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-300" />{lang === "nl" ? "Gekoeld bezorgd" : "Chilled delivery"}</span>
+
+            <div className="mt-10 flex flex-wrap gap-x-7 gap-y-3 text-sm font-semibold text-stone-500">
+              <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-[#064e3b]" />{lang === "nl" ? "Per stuk geprijsd" : "Priced per piece"}</span>
+              <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-[#064e3b]" />{lang === "nl" ? "Gast bestellen" : "Guest checkout"}</span>
+              <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-[#064e3b]" />{lang === "nl" ? "Gekoeld bezorgd" : "Chilled delivery"}</span>
             </div>
+          </div>
+
+          <div className="relative hidden min-h-[570px] items-center justify-center lg:flex">
+            <div aria-hidden="true" className="absolute h-[470px] w-[470px] rounded-full border border-[#064e3b]/10" />
+            <div aria-hidden="true" className="absolute h-[330px] w-[330px] rounded-full border border-[#064e3b]/10" />
+            <div aria-hidden="true" className="absolute h-[210px] w-[210px] rounded-full bg-white shadow-[0_25px_70px_rgba(6,78,59,0.10)]" />
+            <div className="relative z-10 grid h-[180px] w-[180px] place-items-center rounded-full bg-[#064e3b] text-center text-white shadow-[0_25px_60px_rgba(6,78,59,0.22)]">
+              <div>
+                <div className="text-[10px] font-black uppercase tracking-[0.24em] text-emerald-200">Fresh daily</div>
+                <div className="mt-2 text-2xl font-black tracking-tight">WIN &amp; WIN</div>
+                <div className="mt-1 text-xs text-white/60">{lang === "nl" ? "vers geselecteerd" : "carefully selected"}</div>
+              </div>
+            </div>
+
+            {[
+              ...featuredProducts,
+              ...saleProducts,
+              ...seasonalProducts,
+            ].filter((p, i, arr) => arr.findIndex((x) => x.id === p.id) === i).slice(0, 6).map((product, index) => {
+              const orbitAngles = [0, 60, 120, 180, 240, 300];
+              const angle = orbitAngles[index];
+              return (
+                <div
+                  key={`hero-orbit-${product.id}`}
+                  className="winwin-orbit absolute left-1/2 top-1/2 h-[470px] w-[470px] -translate-x-1/2 -translate-y-1/2"
+                  style={{ animation: `winwin-orbit ${18 + index * 1.5}s linear infinite`, animationDelay: `-${index * 2}s` }}
+                >
+                  <div
+                    className="absolute left-1/2 top-0 h-24 w-24 -translate-x-1/2 -translate-y-1/2"
+                    style={{ transform: `translateX(-50%) rotate(${angle}deg)`, transformOrigin: "50% 235px" }}
+                  >
+                    <div className="winwin-counter h-full w-full overflow-hidden rounded-[28px] border-4 border-white bg-white p-1.5 shadow-[0_18px_40px_rgba(0,0,0,0.10)]" style={{ animation: `winwin-counter ${18 + index * 1.5}s linear infinite` }}>
+                      <img src={product.mainImage} alt="" className="h-full w-full rounded-[21px] object-cover" loading="eager" />
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
