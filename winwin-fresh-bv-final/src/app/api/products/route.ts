@@ -57,7 +57,7 @@ export async function GET(req: Request) {
       badges: products.badges, homepagePlacements: products.homepagePlacements, isPublished: products.isPublished, sortOrder: products.sortOrder, nutrition: products.nutrition,
       createdAt: products.createdAt,
     }).from(products).leftJoin(categories, eq(products.categoryId, categories.id)).where(whereClause).orderBy(orderByClause);
-    return NextResponse.json(result.map((p) => ({ ...p, unit: "piece" })));
+    return NextResponse.json(result);
   } catch (error) {
     console.error("Products fetch error:", error);
     return NextResponse.json({ error: "Fout bij ophalen producten" }, { status: 500 });
@@ -69,17 +69,18 @@ export async function POST(req: Request) {
     const session = await getAdminSession();
     if (!session || session.role === "order_manager") return NextResponse.json({ error: "Geen toegang" }, { status: 403 });
     const body = await req.json();
-    const { nameNl, nameEn, descriptionNl, descriptionEn, categoryId, pricePerKg, salePricePerKg, mainImage,
+    const { nameNl, nameEn, descriptionNl, descriptionEn, categoryId, pricePerKg, salePricePerKg, unit = "piece", mainImage,
       additionalImages = [], stockQuantity = "100.00", stockStatus = "in_stock", origin = "Nederland",
       isFeatured = false, isSeasonal = false, isOrganic = false, isNew = false, badges = [], homepagePlacements = [], isPublished = true,
       sortOrder = 0, nutrition, slug } = body;
-    if (!nameNl || !pricePerKg || !mainImage) return NextResponse.json({ error: "Productnaam, prijs per stuk en hoofdafbeelding zijn verplicht" }, { status: 400 });
+    if (!nameNl || !pricePerKg || !mainImage) return NextResponse.json({ error: "Productnaam, prijs en hoofdafbeelding zijn verplicht" }, { status: 400 });
+    const pricingUnit = unit === "kg" ? "kg" : "piece";
     const generatedSlug = (slug || nameNl).toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
     const [created] = await db.insert(products).values({
       nameNl, nameEn: nameEn || nameNl, descriptionNl: descriptionNl || "", descriptionEn: descriptionEn || "",
       categoryId: categoryId ? parseInt(categoryId, 10) : null, pricePerKg: parseFloat(pricePerKg).toFixed(2),
-      salePricePerKg: salePricePerKg ? parseFloat(salePricePerKg).toFixed(2) : null, unit: "piece", mainImage,
-      additionalImages: Array.isArray(additionalImages) ? additionalImages : [], stockQuantity: parseFloat(stockQuantity).toFixed(0),
+      salePricePerKg: salePricePerKg ? parseFloat(salePricePerKg).toFixed(2) : null, unit: pricingUnit, mainImage,
+      additionalImages: Array.isArray(additionalImages) ? additionalImages : [], stockQuantity: parseFloat(stockQuantity).toFixed(pricingUnit === "kg" ? 2 : 0),
       stockStatus, origin, isFeatured: Boolean(isFeatured), isSeasonal: Boolean(isSeasonal), isOrganic: Boolean(isOrganic),
       isNew: Boolean(isNew), badges: Array.isArray(badges) ? badges : [], homepagePlacements: Array.isArray(homepagePlacements) ? homepagePlacements : [], isPublished: isPublished !== undefined ? Boolean(isPublished) : true,
       sortOrder: parseInt(sortOrder || "0", 10), nutrition: nutrition || null, slug: generatedSlug,
