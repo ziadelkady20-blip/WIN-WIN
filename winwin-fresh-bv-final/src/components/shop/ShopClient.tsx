@@ -159,25 +159,6 @@ export function ShopClient({ initialProducts, categories }: ShopClientProps) {
       </section>
 
       <div className="mx-auto max-w-[1540px] px-5 py-8 sm:px-8 lg:px-10 lg:py-10">
-          <div className="relative overflow-hidden rounded-[26px] border border-[#e2ddcf] bg-[#fbf8ef] px-6 py-8 sm:px-10 lg:px-14 lg:py-10">
-            <div className="pointer-events-none absolute -right-12 -top-20 h-72 w-72 rounded-full border-[28px] border-[#d8dfd3]/70" />
-            <div className="pointer-events-none absolute right-28 top-4 h-20 w-20 rounded-full bg-[#e6e5dc]/70 blur-xl" />
-            <div className="relative">
-              <p className="text-[11px] font-bold uppercase tracking-[0.35em] text-[#5f685f]">
-                QUALITY FRESH PRODUCE · DIRECT SUPPLY · FOR PROFESSIONALS
-              </p>
-              <h1 className="mt-3 max-w-4xl font-serif text-5xl leading-[0.95] tracking-[-0.045em] text-[#16372a] sm:text-6xl lg:text-[76px]">
-                {lang === "nl" ? <>Wekelijkse <em className="text-[#b51d22]">verse</em> aankomsten</> : <>Weekly <em className="text-[#b51d22]">fresh</em> arrivals</>}
-              </h1>
-              <p className="mt-5 max-w-2xl text-sm leading-6 text-[#737971] sm:text-base">
-                {t.shop.subtitle}
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <div className="mx-auto max-w-[1540px] px-5 py-8 sm:px-8 lg:px-10 lg:py-10">
         <div className="mb-5 flex items-center justify-end gap-3">
           <div className="relative hidden w-full max-w-xl lg:hidden">
             <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#777b76]" />
