@@ -85,9 +85,9 @@ export function HomeSections({ sections, categories, featuredProducts, seasonalP
         </div>
       </section>
 
-      {/* BENEFITS — exactly one */}
+      {/* BENEFITS — one quiet value strip */}
       <section id="home-benefits" className="border-b border-stone-200 bg-white">
-        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-0 px-5 sm:grid-cols-2 lg:grid-cols-4 lg:px-8">
+        <div className="mx-auto grid max-w-7xl grid-cols-2 divide-x divide-stone-100 px-5 sm:grid-cols-4 sm:px-8 lg:px-10">
           {featureItems.map((item: any, index: number) => {
             const fallback = featureFallback[index];
             const Icon = fallback?.[0] || Leaf;
@@ -95,18 +95,15 @@ export function HomeSections({ sections, categories, featuredProducts, seasonalP
             const title = isDbItem
               ? (lang === "nl" ? item.titleNl : item.titleEn) || (lang === "nl" ? item.titleEn : item.titleNl) || ""
               : (lang === "nl" ? item[1] : item[2]);
-            const desc = isDbItem
-              ? (lang === "nl" ? item.descNl : item.descEn) || (lang === "nl" ? item.descEn : item.descNl) || ""
-              : (lang === "nl" ? item[3] : item[4]);
 
             return (
-              <div key={`benefit-${index}`} className="flex gap-3.5 border-b border-stone-100 px-2 py-7 lg:border-b-0 lg:border-r lg:px-7 lg:first:pl-0 lg:last:border-r-0 lg:last:pr-0">
-                <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-emerald-50 text-emerald-800">
-                  <Icon className="h-5 w-5" />
-                </div>
+              <div key={`benefit-${index}`} className="flex items-center gap-3 px-3 py-6 sm:px-5 lg:px-7">
+                <Icon className="h-5 w-5 shrink-0 text-[#064e3b]" />
                 <div>
-                  <h3 className="text-sm font-extrabold text-stone-900">{title}</h3>
-                  <p className="mt-1 text-xs leading-5 text-stone-500">{desc}</p>
+                  <h3 className="text-xs font-extrabold text-stone-900 sm:text-sm">{title}</h3>
+                  <p className="mt-0.5 hidden text-[11px] leading-5 text-stone-500 sm:block">
+                    {isDbItem ? ((lang === "nl" ? item.descNl : item.descEn) || (lang === "nl" ? item.descEn : item.descNl) || "") : (lang === "nl" ? fallback[3] : fallback[4])}
+                  </p>
                 </div>
               </div>
             );
@@ -114,37 +111,44 @@ export function HomeSections({ sections, categories, featuredProducts, seasonalP
         </div>
       </section>
 
-      {/* CATEGORIES — exactly one */}
-      <section id="home-categories" className="py-16 sm:py-20">
+      {/* CATEGORIES — typography only, no decorative imagery */}
+      <section id="home-categories" className="bg-[#f7f6f0] py-20 sm:py-24">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
-          <div className="mb-9 flex items-end justify-between gap-5">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-800">WIN &amp; WIN FRESH</p>
-              <h2 className="mt-2 text-3xl font-black tracking-tight text-stone-950 sm:text-4xl">
+              <p className="text-[11px] font-black uppercase tracking-[0.22em] text-[#064e3b]">{lang === "nl" ? "Ons assortiment" : "Our assortment"}</p>
+              <h2 className="mt-2 text-3xl font-black tracking-[-0.03em] text-stone-950 sm:text-4xl">
                 {t(categorySection, "title", "Categorieën", "Categories")}
               </h2>
-              <p className="mt-2 text-sm text-stone-500">
-                {t(categorySection, "subtitle", "Ons actuele assortiment.", "Our current assortment.")}
+              <p className="mt-2 max-w-xl text-sm leading-6 text-stone-500">
+                {t(categorySection, "subtitle", "Een helder assortiment, zorgvuldig geselecteerd.", "A focused assortment, carefully selected.")}
               </p>
             </div>
-            <Link href="/categories" className="hidden items-center gap-1 text-sm font-bold text-emerald-800 sm:inline-flex">
-              {lang === "nl" ? "Alle categorieën" : "All categories"}<ArrowRight className="h-4 w-4" />
+            <Link href="/categories" className="inline-flex w-fit items-center gap-2 rounded-full border border-[#064e3b]/15 bg-white px-4 py-2 text-xs font-bold text-[#064e3b] transition hover:border-[#064e3b]/30 hover:bg-[#064e3b] hover:text-white">
+              {lang === "nl" ? "Bekijk alles" : "View all"} <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
 
           {categories.length ? (
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-              {categories.slice(0, 6).map((cat: any) => (
-                <Link key={`category-${cat.id}`} href={`/shop?category=${cat.slug}`} className="group overflow-hidden rounded-2xl border border-stone-200 bg-white transition hover:-translate-y-1 hover:border-emerald-300 hover:shadow-lg">
-                  <div className="aspect-[4/3] overflow-hidden bg-stone-100">
-                    {cat.image ? <img src={cat.image} alt={lang === "nl" ? cat.nameNl : cat.nameEn} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" /> : <div className="h-full w-full bg-gradient-to-br from-emerald-50 to-stone-100" />}
+            <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+              {categories.slice(0, 6).map((cat: any, index: number) => (
+                <Link
+                  key={`category-${cat.id}`}
+                  href={`/shop?category=${cat.slug}`}
+                  className="group relative min-h-[150px] overflow-hidden rounded-2xl border border-stone-200 bg-white p-5 transition duration-300 hover:-translate-y-1 hover:border-[#064e3b]/30 hover:shadow-[0_18px_40px_rgba(6,78,59,0.08)]"
+                >
+                  <span className="absolute right-4 top-4 text-[10px] font-black tracking-[0.15em] text-stone-300 transition group-hover:text-[#064e3b]">{String(index + 1).padStart(2, "0")}</span>
+                  <div className="absolute bottom-4 left-5 h-1 w-7 rounded-full bg-[#dc2626] transition-all duration-300 group-hover:w-12" />
+                  <div className="flex h-full min-h-[110px] items-end">
+                    <span className="max-w-[12ch] text-base font-extrabold leading-5 text-stone-900 transition group-hover:text-[#064e3b] sm:text-lg">
+                      {lang === "nl" ? cat.nameNl : cat.nameEn}
+                    </span>
                   </div>
-                  <div className="p-3 text-center text-sm font-bold text-stone-900">{lang === "nl" ? cat.nameNl : cat.nameEn}</div>
                 </Link>
               ))}
             </div>
           ) : (
-            <div className="rounded-2xl border border-dashed border-stone-300 bg-white p-10 text-center text-sm text-stone-500">
+            <div className="mt-10 rounded-2xl border border-dashed border-stone-300 bg-white p-10 text-center text-sm text-stone-500">
               {lang === "nl" ? "Categorieën worden binnenkort toegevoegd." : "Categories will be available soon."}
             </div>
           )}
@@ -174,44 +178,24 @@ export function HomeSections({ sections, categories, featuredProducts, seasonalP
         products={seasonalProducts}
       />}
 
-      {/* DELIVERY CTA — exactly one */}
-      <section id="home-delivery" className="bg-[#0a3528] py-16 text-white sm:py-20">
+      {/* DELIVERY CTA — quiet premium close */}
+      <section id="home-delivery" className="bg-[#064e3b] py-20 text-white sm:py-24">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
-          <div className="max-w-3xl">
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-300">{lang === "nl" ? "Gekoelde levering" : "Chilled delivery"}</p>
-            <h2 className="mt-2 text-3xl font-black tracking-tight sm:text-4xl">
-              {t(delivery, "title", "Vers tot aan uw deur", "Freshness delivered to your door")}
-            </h2>
-            <p className="mt-4 leading-8 text-emerald-50/75">
-              {t(delivery, "content", "Bestel eenvoudig als gast en ontvang uw verse producten gekoeld aan huis.", "Order easily as a guest and receive your fresh products chilled at your doorstep.")}
-            </p>
-            <Link href="/shop" className="mt-7 inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3.5 text-sm font-extrabold text-emerald-950 transition hover:bg-emerald-50">
-              {lang === "nl" ? "Bestel nu" : "Order now"}<ArrowRight className="h-4 w-4" />
+          <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-2xl">
+              <p className="text-[11px] font-black uppercase tracking-[0.22em] text-emerald-200">{lang === "nl" ? "Van bestelling tot deur" : "From order to door"}</p>
+              <h2 className="mt-3 text-4xl font-black tracking-[-0.04em] sm:text-5xl">
+                {t(delivery, "title", "Vers tot aan uw deur", "Freshness delivered to your door")}
+              </h2>
+              <p className="mt-5 max-w-xl text-sm leading-7 text-emerald-50/75 sm:text-base">
+                {t(delivery, "content", "Bestel eenvoudig als gast en ontvang uw verse producten gekoeld aan huis.", "Order easily as a guest and receive your fresh products chilled at your doorstep.")}
+              </p>
+            </div>
+            <Link href="/shop" className="group inline-flex w-fit items-center gap-3 rounded-xl bg-white px-6 py-3.5 text-sm font-extrabold text-[#064e3b] transition hover:-translate-y-0.5 hover:bg-emerald-50">
+              {lang === "nl" ? "Bestel nu" : "Order now"}
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
         </div>
       </section>
-    </div>
-  );
-}
 
-
-function ProductSection({id,eyebrow,title,subtitle,products}:{id:string;eyebrow:string;title:string;subtitle:string;products:any[]}){
-  return <section id={id} className="border-y border-stone-200 bg-white py-16 sm:py-20">
-    <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
-      <div className="mb-9 flex items-end justify-between gap-5">
-        <div>
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-800">{eyebrow}</p>
-          <h2 className="mt-2 text-3xl font-black tracking-tight text-stone-950 sm:text-4xl">{title}</h2>
-          <p className="mt-2 text-sm text-stone-500">{subtitle}</p>
-        </div>
-        <Link href="/shop" className="hidden items-center gap-1 text-sm font-bold text-emerald-800 sm:inline-flex">
-          Alle producten<ArrowRight className="h-4 w-4" />
-        </Link>
-      </div>
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {products.slice(0, 8).map((product:any)=><ProductCard key={`home-${id}-${product.id}`} product={{...product,unit:"piece"}} />)}
-      </div>
-    </div>
-  </section>;
-}
