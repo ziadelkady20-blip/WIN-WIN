@@ -67,7 +67,7 @@ export function HomeSections({ sections, categories, featuredProducts, seasonalP
           }
         `}</style>
 
-        <div className="mx-auto grid min-h-[680px] max-w-7xl items-center gap-10 px-5 py-16 sm:px-8 lg:grid-cols-[0.92fr_1.08fr] lg:px-10 lg:py-20">
+        <div className="mx-auto grid min-h-[680px] max-w-7xl items-center gap-4 px-5 py-14 sm:px-8 lg:grid-cols-[0.92fr_1.08fr] lg:gap-10 lg:px-10 lg:py-20">
           <div className="relative z-20 max-w-2xl">
             <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-[#064e3b]/10 bg-white px-4 py-2 text-[11px] font-black uppercase tracking-[0.2em] text-[#064e3b] shadow-sm">
               <Leaf className="h-4 w-4" />
@@ -99,11 +99,11 @@ export function HomeSections({ sections, categories, featuredProducts, seasonalP
             </div>
           </div>
 
-          <div className="relative hidden min-h-[570px] items-center justify-center lg:flex">
-            <div aria-hidden="true" className="absolute h-[470px] w-[470px] rounded-full border border-[#064e3b]/10" />
-            <div aria-hidden="true" className="absolute h-[330px] w-[330px] rounded-full border border-[#064e3b]/10" />
-            <div aria-hidden="true" className="absolute h-[210px] w-[210px] rounded-full bg-white shadow-[0_25px_70px_rgba(6,78,59,0.10)]" />
-            <div className="relative z-10 grid h-[180px] w-[180px] place-items-center rounded-full bg-[#064e3b] text-center text-white shadow-[0_25px_60px_rgba(6,78,59,0.22)]">
+          <div className="relative flex min-h-[340px] items-center justify-center overflow-visible sm:min-h-[420px] lg:min-h-[570px]">
+            <div aria-hidden="true" className="absolute h-[300px] w-[300px] rounded-full border border-[#064e3b]/10 sm:h-[390px] sm:w-[390px] lg:h-[470px] lg:w-[470px]" />
+            <div aria-hidden="true" className="absolute h-[220px] w-[220px] rounded-full border border-[#064e3b]/10 sm:h-[280px] sm:w-[280px] lg:h-[330px] lg:w-[330px]" />
+            <div aria-hidden="true" className="absolute h-[145px] w-[145px] rounded-full bg-white shadow-[0_25px_70px_rgba(6,78,59,0.10)] sm:h-[180px] sm:w-[180px] lg:h-[210px] lg:w-[210px]" />
+            <div className="relative z-10 grid h-[125px] w-[125px] place-items-center rounded-full bg-[#064e3b] text-center text-white shadow-[0_25px_60px_rgba(6,78,59,0.22)] sm:h-[155px] sm:w-[155px] lg:h-[180px] lg:w-[180px]">
               <div>
                 <div className="text-[10px] font-black uppercase tracking-[0.24em] text-emerald-200">Fresh daily</div>
                 <div className="mt-2 text-2xl font-black tracking-tight">WIN &amp; WIN</div>
@@ -121,12 +121,12 @@ export function HomeSections({ sections, categories, featuredProducts, seasonalP
               return (
                 <div
                   key={`hero-orbit-${product.id}`}
-                  className="winwin-orbit absolute left-1/2 top-1/2 h-[470px] w-[470px] -translate-x-1/2 -translate-y-1/2"
-                  style={{ animation: `winwin-orbit ${18 + index * 1.5}s linear infinite`, animationDelay: `-${index * 2}s` }}
+                  className="winwin-orbit absolute left-1/2 top-1/2 h-[300px] w-[300px] -translate-x-1/2 -translate-y-1/2 sm:h-[390px] sm:w-[390px] lg:h-[470px] lg:w-[470px]"
+                  style={{ "--orbit-radius": "150px", animation: `winwin-orbit ${18 + index * 1.5}s linear infinite`, animationDelay: `-${index * 2}s` } as React.CSSProperties}
                 >
                   <div
-                    className="absolute left-1/2 top-0 h-24 w-24 -translate-x-1/2 -translate-y-1/2"
-                    style={{ transform: `translateX(-50%) rotate(${angle}deg)`, transformOrigin: "50% 235px" }}
+                    className="absolute left-1/2 top-0 h-16 w-16 -translate-x-1/2 -translate-y-1/2 sm:h-20 sm:w-20 lg:h-24 lg:w-24"
+                    style={{ transform: `translateX(-50%) rotate(${angle}deg)`, transformOrigin: "50% var(--orbit-radius)" }}
                   >
                     <div className="winwin-counter h-full w-full overflow-hidden rounded-[28px] border-4 border-white bg-white p-1.5 shadow-[0_18px_40px_rgba(0,0,0,0.10)]" style={{ animation: `winwin-counter ${18 + index * 1.5}s linear infinite` }}>
                       <img src={product.mainImage} alt="" className="h-full w-full rounded-[21px] object-cover" loading="eager" />
