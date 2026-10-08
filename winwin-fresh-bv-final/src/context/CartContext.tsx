@@ -96,7 +96,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
             : item
         );
       }
-      return [...prev, { ...product, quantity: Math.max(0.01, item.unit === "kg" ? Math.round(quantity * 100) / 100 : Math.round(quantity)) }];
+      return [...prev, { ...product, quantity: Math.max(product.pricingType === "kg" ? 0.01 : 1, product.pricingType === "kg" ? Math.round(quantity * 100) / 100 : Math.round(quantity)) }];
     });
   };
 
@@ -106,7 +106,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       return;
     }
     setItems((prev) =>
-      prev.map((item) => item.id === id ? { ...item, quantity: Math.max(1, Math.round(quantity)) } : item)
+      prev.map((item) => item.id === id ? { ...item, quantity: Math.max(item.pricingType === "kg" ? 0.01 : 1, item.pricingType === "kg" ? Math.round(quantity * 100) / 100 : Math.round(quantity)) } : item)
     );
   };
 
