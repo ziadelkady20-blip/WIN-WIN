@@ -6,7 +6,7 @@ import { HomeSections } from "@/components/home/HomeSections";
 export const revalidate = 0; // Always read the latest admin product placements on the homepage
 
 const fallbackSections = [
-  { id: "fallback-hero", sectionType: "hero", titleNl: "Verse groenten en fruit, elke dag de beste kwaliteit", titleEn: "Fresh fruits and vegetables, the best quality every day", subtitleNl: "Zorgvuldig geselecteerd en gekoeld bezorgd in heel Nederland.", subtitleEn: "Carefully selected and delivered chilled across the Netherlands.", imageUrl: "https://images.pexels.com/photos/12932209/pexels-photo-12932209.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=900&w=1600", buttonTextNl: "Bekijk producten", buttonTextEn: "Shop products", buttonLink: "/shop", sortOrder: 1 },
+  { id: "fallback-hero", sectionType: "hero", titleNl: "Verse groenten en fruit, elke dag de beste kwaliteit", titleEn: "Fresh fruits and vegetables, the best quality every day", subtitleNl: "Zorgvuldig geselecteerd en gekoeld bezorgd in heel Nederland.", subtitleEn: "Carefully selected and delivered chilled across the Netherlands.", buttonTextNl: "Bekijk producten", buttonTextEn: "Shop products", buttonLink: "/shop", sortOrder: 1 },
   { id: "fallback-features", sectionType: "features", titleNl: "", titleEn: "", config: {}, sortOrder: 2 },
   { id: "fallback-categories", sectionType: "categories", titleNl: "Categorieën", titleEn: "Categories", subtitleNl: "Ons actuele assortiment.", subtitleEn: "Our current assortment.", sortOrder: 3 },
   { id: "fallback-featured", sectionType: "featured_products", titleNl: "Uitgelichte producten", titleEn: "Featured products", sortOrder: 4 },
