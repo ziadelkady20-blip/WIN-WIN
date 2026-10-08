@@ -130,15 +130,21 @@ export function ShopClient({ initialProducts, categories }: ShopClientProps) {
       nameNl: product.nameNl,
       nameEn: product.nameEn,
       pricePerKg: product.salePricePerKg ? parseFloat(product.salePricePerKg) : parseFloat(product.pricePerKg),
-      unit: product.unit === "kg" ? "kg" : "piece",
+      unit: product.pricingType === "kg" ? "kg" : product.pricingType === "pack" ? "pack" : "piece",
+      pricingType: product.pricingType === "kg" || product.pricingType === "pack" ? product.pricingType : (product.unit === "kg" ? "kg" : "piece"),
+      packQuantity: Number(product.packQuantity) || 1,
       image: product.mainImage,
     }, qty);
     setAddedId(product.id);
     window.setTimeout(() => setAddedId(null), 1400);
   };
 
-  const unitLabel = (product: any) =>
-    product.unit === "kg" ? "kg" : (lang === "nl" ? "stuk" : "piece");
+  const unitLabel = (product: any) => {
+    const type = product.pricingType === "kg" || product.pricingType === "pack" ? product.pricingType : (product.unit === "kg" ? "kg" : "piece");
+    if (type === "kg") return "kg";
+    if (type === "pack") return lang === "nl" ? "pack van " + (Number(product.packQuantity) || 1) + " stuks" : "pack of " + (Number(product.packQuantity) || 1) + " pieces";
+    return lang === "nl" ? "stuk" : "piece";
+  };
 
   return (
     <main className="min-h-screen bg-[#f3efe5] text-[#17382b]">
