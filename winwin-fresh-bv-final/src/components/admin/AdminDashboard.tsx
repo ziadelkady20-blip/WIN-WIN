@@ -139,7 +139,7 @@ function OrdersView({orders,query,setQuery,onStatus,onDelete,canDelete}:{orders:
 }
 
 function ProductsView({products,query,setQuery,onAdd,onEdit,onDelete}:{products:any[];query:string;setQuery:(x:string)=>void;onAdd:()=>void;onEdit:(p:any)=>void;onDelete:(id:number)=>void}){
-  return <div className="space-y-5"><Toolbar query={query} setQuery={setQuery} placeholder="Zoek producten..." action={<button onClick={onAdd} className="h-11 px-4 rounded-xl bg-emerald-900 text-white font-bold text-sm inline-flex items-center gap-2"><Plus className="w-4"/>Nieuw product</button>}/><div className="bg-white border border-stone-200 rounded-2xl overflow-hidden">{products.length===0?<Empty text="Geen producten."/>:<div className="overflow-x-auto"><table className="w-full text-sm"><thead className="bg-stone-50 text-xs text-stone-500"><tr><th className="p-4 text-left">Product</th><th className="p-4 text-left">Categorie</th><th className="p-4 text-left">Prijs / stuk</th><th className="p-4 text-left">Voorraad</th><th className="p-4 text-left">Status</th><th className="p-4">Acties</th></tr></thead><tbody>{products.map(p=><tr key={p.id} className="border-t border-stone-100"><td className="p-4"><div className="flex gap-3 items-center min-w-[250px]"><img src={img(p.mainImage)} className="w-11 h-11 rounded-lg object-cover" alt=""/><div><p className="font-semibold">{p.nameNl}</p><p className="text-xs text-stone-400">{p.nameEn}</p></div></div></td><td className="p-4 text-xs">{p.categoryNameNl||"—"}</td><td className="p-4 font-bold">{money(p.salePricePerKg||p.pricePerKg)}</td><td className="p-4 text-xs">{p.stockQuantity} stuks</td><td className="p-4"><div className="flex flex-wrap gap-1.5">{p.isPublished?<span className="text-emerald-800 text-xs font-bold">Published</span>:<span className="text-stone-400 text-xs">Hidden</span>}{p.isFeatured&&<span className="rounded-full bg-amber-50 px-2 py-1 text-[10px] font-bold text-amber-700">Featured</span>}</div></td><td className="p-4"><div className="flex justify-center gap-1"><button onClick={()=>onEdit(p)} className="w-9 h-9 rounded-lg hover:bg-stone-100 grid place-items-center"><Pencil className="w-4"/></button><button onClick={()=>onDelete(p.id)} className="w-9 h-9 rounded-lg hover:bg-red-50 text-red-600 grid place-items-center"><Trash2 className="w-4"/></button></div></td></tr>)}</tbody></table></div>}</div></div>
+  return <div className="space-y-5"><Toolbar query={query} setQuery={setQuery} placeholder="Zoek producten..." action={<button onClick={onAdd} className="h-11 px-4 rounded-xl bg-emerald-900 text-white font-bold text-sm inline-flex items-center gap-2"><Plus className="w-4"/>Nieuw product</button>}/><div className="bg-white border border-stone-200 rounded-2xl overflow-hidden">{products.length===0?<Empty text="Geen producten."/>:<div className="overflow-x-auto"><table className="w-full text-sm"><thead className="bg-stone-50 text-xs text-stone-500"><tr><th className="p-4 text-left">Product</th><th className="p-4 text-left">Categorie</th><th className="p-4 text-left">Prijs</th><th className="p-4 text-left">Voorraad</th><th className="p-4 text-left">Status</th><th className="p-4">Acties</th></tr></thead><tbody>{products.map(p=><tr key={p.id} className="border-t border-stone-100"><td className="p-4"><div className="flex gap-3 items-center min-w-[250px]"><img src={img(p.mainImage)} className="w-11 h-11 rounded-lg object-cover" alt=""/><div><p className="font-semibold">{p.nameNl}</p><p className="text-xs text-stone-400">{p.nameEn}</p></div></div></td><td className="p-4 text-xs">{p.categoryNameNl||"—"}</td><td className="p-4 font-bold"><div>{money(p.salePricePerKg||p.pricePerKg)}</div><div className="text-[10px] font-semibold text-stone-400">{p.pricingType==="kg"?"per kg":p.pricingType==="pack"?"per "+(p.packQuantity||2)+" stuks":"per stuk"}</div></td><td className="p-4 text-xs">{p.stockQuantity} stuks</td><td className="p-4"><div className="flex flex-wrap gap-1.5">{p.isPublished?<span className="text-emerald-800 text-xs font-bold">Published</span>:<span className="text-stone-400 text-xs">Hidden</span>}{p.isFeatured&&<span className="rounded-full bg-amber-50 px-2 py-1 text-[10px] font-bold text-amber-700">Featured</span>}</div></td><td className="p-4"><div className="flex justify-center gap-1"><button onClick={()=>onEdit(p)} className="w-9 h-9 rounded-lg hover:bg-stone-100 grid place-items-center"><Pencil className="w-4"/></button><button onClick={()=>onDelete(p.id)} className="w-9 h-9 rounded-lg hover:bg-red-50 text-red-600 grid place-items-center"><Trash2 className="w-4"/></button></div></td></tr>)}</tbody></table></div>}</div></div>
 }
 
 function CategoriesView({categories,onAdd,onEdit,onDelete}:{categories:any[];onAdd:()=>void;onEdit:(c:any)=>void;onDelete:(id:number)=>void}){
@@ -166,12 +166,13 @@ function SettingsView({settings,onSaved}:{settings:any;onSaved:()=>void}){
 function Modal({children,onClose,title}:{children:ReactNode;onClose:()=>void;title:string}){return <div className="fixed inset-0 z-[90] bg-black/40 p-4 grid place-items-center"><div className="w-full max-w-3xl max-h-[92vh] overflow-y-auto bg-white rounded-3xl shadow-2xl"><div className="sticky top-0 z-10 bg-white border-b border-stone-100 p-5 flex items-center justify-between"><h2 className="font-black text-xl">{title}</h2><button onClick={onClose} className="w-9 h-9 rounded-lg hover:bg-stone-100 grid place-items-center"><X className="w-5"/></button></div>{children}</div></div>}
 
 function ProductModal({product,categories,onClose,onSaved,api}:{product:any;categories:any[];onClose:()=>void;onSaved:()=>void;api:any}){
-  const [f,setF]=useState<any>(product||{nameNl:"",nameEn:"",descriptionNl:"",descriptionEn:"",categoryId:"",pricePerKg:"",salePricePerKg:"",unit:"piece",mainImage:"",additionalImages:[],stockQuantity:"100",stockStatus:"in_stock",origin:"Nederland",isFeatured:false,isSeasonal:false,isOrganic:false,isNew:false,badges:[],homepagePlacements:[],isPublished:true,sortOrder:0});
+  const [f,setF]=useState<any>(product||{nameNl:"",nameEn:"",descriptionNl:"",descriptionEn:"",categoryId:"",pricePerKg:"",salePricePerKg:"",unit:"piece",pricingType:"piece",packQuantity:1,mainImage:"",additionalImages:[],stockQuantity:"100",stockStatus:"in_stock",origin:"Nederland",isFeatured:false,isSeasonal:false,isOrganic:false,isNew:false,badges:[],homepagePlacements:[],isPublished:true,sortOrder:0});
   const set=(k:string,v:any)=>setF((x:any)=>({...x,[k]:v}));
   const save=async(e:any)=>{e.preventDefault();await api(product?`/api/products/${product.id}`:"/api/products",{method:product?"PUT":"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({...f,additionalImages:typeof f.additionalImages==="string"?f.additionalImages.split("\n").map((x:string)=>x.trim()).filter(Boolean):f.additionalImages})});onSaved()};
   const labels:any={isFeatured:"Uitgelicht op homepage",isSeasonal:"Seizoensproduct",isOrganic:"Biologisch",isNew:"Nieuw product",isPublished:"Zichtbaar op website"};
-  const unit = f.unit === "kg" ? "kg" : "piece";
-  const unitNl = unit === "kg" ? "kg" : "stuk";
+  const pricingType = f.pricingType === "kg" || f.pricingType === "pack" ? f.pricingType : (f.unit === "kg" ? "kg" : "piece");
+  const unit = pricingType;
+  const unitNl = pricingType === "kg" ? "kg" : pricingType === "pack" ? "pakket" : "stuk";
   const placements=[
     ["featured","Featured Favorites"],
     ["special","Weekly Special Offers"],
@@ -187,22 +188,28 @@ function ProductModal({product,categories,onClose,onSaved,api}:{product:any;cate
   return <Modal onClose={onClose} title={product?"Product bewerken":"Nieuw product"}><form onSubmit={save} className="p-6 space-y-5"><div className="grid sm:grid-cols-2 gap-4">
     {[["nameNl","Naam Nederlands"],["nameEn","Name English"]].map(([k,l])=><label key={k} className="block"><span className="text-xs font-semibold">{l}</span><input required value={f[k]||""} onChange={e=>set(k,e.target.value)} className="mt-1.5 w-full h-10 rounded-lg border border-stone-200 px-3 text-sm"/></label>)}
     <label className="block">
-      <span className="text-xs font-semibold">Prijs per eenheid</span>
+      <span className="text-xs font-semibold">Prijs</span>
       <input required value={f.pricePerKg||""} onChange={e=>set("pricePerKg",e.target.value)} type="number" min="0" step="0.01" className="mt-1.5 w-full h-10 rounded-lg border border-stone-200 px-3 text-sm"/>
-      <span className="mt-1 block text-[11px] text-stone-500">Prijs voor 1 {unitNl}</span>
+      <span className="mt-1 block text-[11px] text-stone-500">{pricingType==="pack" ? "Prijs voor 1 pack van "+Math.max(2,Number(f.packQuantity)||1)+" stuks" : "Prijs voor 1 "+unitNl}</span>
     </label>
     <label className="block">
-      <span className="text-xs font-semibold">Actieprijs per eenheid <span className="font-normal text-stone-400">(optioneel)</span></span>
+      <span className="text-xs font-semibold">Actieprijs <span className="font-normal text-stone-400">(optioneel)</span></span>
       <input value={f.salePricePerKg||""} onChange={e=>set("salePricePerKg",e.target.value)} type="number" min="0" step="0.01" className="mt-1.5 w-full h-10 rounded-lg border border-stone-200 px-3 text-sm"/>
-      <span className="mt-1 block text-[11px] text-stone-500">Actieprijs voor 1 {unitNl}</span>
+      <span className="mt-1 block text-[11px] text-stone-500">{pricingType==="pack" ? "Actieprijs voor 1 pack van "+Math.max(2,Number(f.packQuantity)||1)+" stuks" : "Actieprijs voor 1 "+unitNl}</span>
     </label>
     <label className="block">
-      <span className="text-xs font-semibold">وحدة التسعير</span>
-      <select value={unit} onChange={e=>set("unit",e.target.value)} className="mt-1.5 w-full h-10 rounded-lg border border-stone-200 px-3 text-sm">
-        <option value="piece">Per stuk / Per piece</option>
+      <span className="text-xs font-semibold">طريقة التسعير</span>
+      <select value={pricingType} onChange={e=>{const v=e.target.value;set("pricingType",v);set("unit",v)}} className="mt-1.5 w-full h-10 rounded-lg border border-stone-200 px-3 text-sm">
+        <option value="piece">Per piece / Per stuk</option>
         <option value="kg">Per kilogram / Per kg</option>
+        <option value="pack">Pack / Bundle</option>
       </select>
     </label>
+    {pricingType === "pack" && <label className="block">
+      <span className="text-xs font-semibold">عدد القطع داخل الـPack</span>
+      <input required value={f.packQuantity||2} onChange={e=>set("packQuantity",e.target.value)} type="number" min="2" step="1" className="mt-1.5 w-full h-10 rounded-lg border border-stone-200 px-3 text-sm"/>
+      <span className="mt-1 block text-[11px] text-stone-500">مثال: 2 قطع بـ €5 أو 15 قطعة بـ €14.50</span>
+    </label>}
     <label className="block">
       <span className="text-xs font-semibold">Voorraad ({unitNl})</span>
       <input value={f.stockQuantity||""} onChange={e=>set("stockQuantity",e.target.value)} type="number" min="0" step={unit==="kg"?"0.01":"1"} className="mt-1.5 w-full h-10 rounded-lg border border-stone-200 px-3 text-sm"/>
