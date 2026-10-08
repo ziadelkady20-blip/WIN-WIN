@@ -51,49 +51,35 @@ export function HomeSections({ sections, categories, featuredProducts, seasonalP
 
   return (
     <div className="bg-[#fcfbf7]">
-      {/* HERO — exactly one */}
-      <section id="home-hero" className="relative isolate min-h-[680px] overflow-hidden bg-[#082f24] text-white">
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url(${hero?.imageUrl || FALLBACK_HERO_IMAGE})` }}
-        />
-        <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/65 to-black/20" />
-        <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-black/10" />
-
-        <div className="relative z-10 mx-auto flex min-h-[680px] max-w-7xl items-center px-5 py-24 sm:px-8 lg:px-10">
-          <div className="max-w-3xl">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-300/30 bg-emerald-950/75 px-4 py-2 text-xs font-extrabold uppercase tracking-[0.18em] text-emerald-200 backdrop-blur">
+      {/* HERO — text-first, no AI imagery */}
+      <section id="home-hero" className="relative overflow-hidden bg-[#064e3b] text-white">
+        <div aria-hidden="true" className="absolute inset-0 opacity-[0.07] [background-image:linear-gradient(rgba(255,255,255,.8)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.8)_1px,transparent_1px)] [background-size:44px_44px]" />
+        <div aria-hidden="true" className="absolute -right-24 -top-24 h-72 w-72 rounded-full border-[40px] border-emerald-300/10" />
+        <div className="relative mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-24 lg:px-10 lg:py-28">
+          <div className="max-w-4xl">
+            <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.2em] text-emerald-100">
               <Leaf className="h-4 w-4" />
-              WIN &amp; WIN FRESH BV
+              WIN &amp; WIN FRESH
             </div>
-            <h1 className="max-w-3xl text-4xl font-black leading-[1.02] tracking-[-0.03em] sm:text-5xl lg:text-7xl">
+            <h1 className="max-w-4xl text-5xl font-black leading-[0.98] tracking-[-0.045em] sm:text-6xl lg:text-8xl">
               {t(hero, "title", "Verse groenten en fruit, elke dag de beste kwaliteit", "Fresh fruits and vegetables, the best quality every day")}
             </h1>
-            <p className="mt-7 max-w-2xl text-base leading-8 text-white/75 sm:text-lg">
+            <p className="mt-7 max-w-2xl text-base leading-8 text-emerald-50/75 sm:text-lg">
               {t(hero, "subtitle", "Zorgvuldig geselecteerd en gekoeld bezorgd in heel Nederland.", "Carefully selected and delivered chilled across the Netherlands.")}
             </p>
-
             <div className="mt-9 flex flex-wrap gap-3">
-              <Link
-                href={hero?.buttonLink || "/shop"}
-                className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-6 py-3.5 text-sm font-extrabold text-white shadow-lg shadow-emerald-950/20 transition hover:bg-emerald-500"
-              >
+              <Link href={hero?.buttonLink || "/shop"} className="group inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3.5 text-sm font-extrabold text-[#064e3b] shadow-sm transition hover:-translate-y-0.5 hover:bg-emerald-50">
                 {t(hero, "buttonText", "Bekijk producten", "Shop products")}
-                <ArrowRight className="h-4 w-4" />
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
-              <Link
-                href="/categories"
-                className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-6 py-3.5 text-sm font-bold text-white backdrop-blur transition hover:bg-white/15"
-              >
+              <Link href="/categories" className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-transparent px-6 py-3.5 text-sm font-bold text-white transition hover:bg-white/10">
                 {lang === "nl" ? "Ontdek categorieën" : "Explore categories"}
               </Link>
             </div>
-
-            <div className="mt-10 grid max-w-2xl grid-cols-1 gap-4 border-t border-white/15 pt-6 text-sm text-white/75 sm:grid-cols-3">
-              <div className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-400" />{lang === "nl" ? "Per stuk" : "Per piece"}</div>
-              <div className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-400" />{lang === "nl" ? "Gast bestellen" : "Guest checkout"}</div>
-              <div className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-400" />{lang === "nl" ? "Betalen bij levering" : "Pay on delivery"}</div>
+            <div className="mt-12 flex flex-wrap gap-x-8 gap-y-3 border-t border-white/15 pt-6 text-sm font-medium text-emerald-50/75">
+              <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-300" />{lang === "nl" ? "Per stuk geprijsd" : "Priced per piece"}</span>
+              <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-300" />{lang === "nl" ? "Gast bestellen" : "Guest checkout"}</span>
+              <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-300" />{lang === "nl" ? "Gekoeld bezorgd" : "Chilled delivery"}</span>
             </div>
           </div>
         </div>
