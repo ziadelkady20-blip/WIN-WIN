@@ -268,11 +268,10 @@ export default function CheckoutPage() {
                 <strong>{formatPrice(cart.subtotal, lang)}</strong>
               </div>
               <div className="flex justify-between">
-                <span className="text-stone-500">{t.cart.deliveryFee}</span>
-                <strong>
-                  {cart.deliveryFee === 0 ? t.cart.freeDelivery : formatPrice(cart.deliveryFee, lang)}
-                </strong>
+                <span className="text-stone-500">{lang === "nl" ? "Bezorgkosten" : "Delivery fee"}</span>
+                <strong>{formatPrice(0, lang)}</strong>
               </div>
+              <div className="flex justify-between"><span className="text-stone-500">{lang === "nl" ? `BTW (${Math.round(vatRate * 100)}%)` : `VAT (${Math.round(vatRate * 100)}%)`}</span><strong>{formatPrice(checkoutTax, lang)}</strong></div>
               <div className="flex justify-between pt-3 border-t border-stone-100 text-lg">
                 <strong>{t.cart.total}</strong>
                 <strong className="text-emerald-900">{formatPrice(checkoutTotal, lang)}</strong>
