@@ -142,6 +142,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const deliveryFee = 0;
   const taxAmount = Math.round(Math.max(0, subtotal - (appliedCoupon ? (appliedCoupon.discountType === "percentage" ? subtotal * appliedCoupon.discountValue / 100 : Math.min(subtotal, appliedCoupon.discountValue)) : 0)) * 0.09 * 100) / 100;
   const freeDeliveryThreshold = 0;
+  const defaultDeliveryFee = 0;
   const amountNeededForFreeDelivery = 0;
   const isFreeDelivery = true;
 
