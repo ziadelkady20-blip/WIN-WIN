@@ -37,8 +37,6 @@ export async function POST(req: Request) {
     if (!Array.isArray(items) || items.length === 0) return NextResponse.json({ error: "Uw winkelmand is leeg" }, { status: 400 });
     const [settings] = await db.select().from(deliverySettings).limit(1);
     const minOrderVal = settings ? Number(settings.minOrderValue) : 15;
-    const freeDeliveryThreshold = settings ? Number(settings.freeDeliveryThreshold) : 35;
-    const standardDeliveryFee = settings ? Number(settings.deliveryFee) : 4.95;
     const requested = items.map((it: any) => ({ id: Number(it.id), quantity: Number(it.quantity) })).filter((it: any) => Number.isInteger(it.id) && it.id > 0 && Number.isFinite(it.quantity) && it.quantity > 0);
     if (!requested.length) return NextResponse.json({ error: "Ongeldige winkelmand" }, { status: 400 });
     const productIds = [...new Set(requested.map((it: any) => it.id))];
@@ -74,12 +72,16 @@ export async function POST(req: Request) {
         }
       }
     }
-    const deliveryFee = calculatedSubtotal >= freeDeliveryThreshold ? 0 : standardDeliveryFee;
-    const finalTotal = Math.max(0, Math.round((calculatedSubtotal - discountAmount + deliveryFee) * 100) / 100);
+    const countryName = String(country || "Nederland").trim();
+    const euCountries = new Set(["Nederland", "België", "Duitsland", "Frankrijk", "Spanje", "Italië", "Portugal", "Luxemburg", "Oostenrijk", "Denemarken", "Zweden", "Finland", "Ierland", "Polen", "Tsjechië", "Slowakije", "Slovenië", "Kroatië", "Hongarije", "Roemenië", "Bulgarije", "Griekenland", "Estland", "Letland", "Litouwen", "Cyprus", "Malta"]);
+    const vatRate = countryName === "Nederland" || !euCountries.has(countryName) ? 0.09 : 0;
+    const taxAmount = Math.round(Math.max(0, calculatedSubtotal - discountAmount) * vatRate * 100) / 100;
+    const deliveryFee = 0;
+    const finalTotal = Math.max(0, Math.round((calculatedSubtotal - discountAmount + taxAmount) * 100) / 100);
     const orderNumber = `WWF-${new Date().getFullYear()}-${Date.now().toString(36).toUpperCase()}-${Math.floor(100 + Math.random() * 900)}`;
     const confirmationToken = crypto.randomUUID();
     const createdOrder = await db.transaction(async (tx) => {
-      const [order] = await tx.insert(orders).values({ orderNumber, confirmationToken, customerName: customerName.trim(), customerEmail: customerEmail.toLowerCase().trim(), customerPhone: customerPhone.trim(), street: street.trim(), houseNumber: houseNumber.trim(), postalCode: postalCode.toUpperCase().trim(), city: city.trim(), country, addressExtra: addressExtra.trim(), orderNotes: orderNotes.trim(), status: "under_review", subtotal: calculatedSubtotal.toFixed(2), deliveryFee: deliveryFee.toFixed(2), discountAmount: discountAmount.toFixed(2), couponCode: appliedCouponCode, total: finalTotal.toFixed(2), paymentStatus: "pending_on_delivery", paymentMethod: "on_delivery" }).returning();
+      const [order] = await tx.insert(orders).values({ orderNumber, confirmationToken, customerName: customerName.trim(), customerEmail: customerEmail.toLowerCase().trim(), customerPhone: customerPhone.trim(), street: street.trim(), houseNumber: houseNumber.trim(), postalCode: postalCode.toUpperCase().trim(), city: city.trim(), country: countryName, addressExtra: addressExtra.trim(), orderNotes: orderNotes.trim(), status: "under_review", subtotal: calculatedSubtotal.toFixed(2), deliveryFee: deliveryFee.toFixed(2), discountAmount: discountAmount.toFixed(2), taxAmount: taxAmount.toFixed(2), couponCode: appliedCouponCode, total: finalTotal.toFixed(2), paymentStatus: "pending_on_delivery", paymentMethod: "on_delivery" }).returning();
       await tx.insert(orderStatusHistory).values({ orderId: order.id, status: "under_review", note: "Order placed by customer - awaiting review" });
       for (const item of preparedItems) {
         await tx.insert(orderItems).values({ orderId: order.id, productId: item.product.id, productName: item.product.nameNl, pricePerUnit: item.unitPrice.toFixed(2), pricingType: item.product.pricingType, packQuantity: item.product.packQuantity || 1, quantity: item.quantity.toString(), unit: item.product.pricingType === "kg" ? "kg" : item.product.pricingType === "pack" ? "pack" : "piece", totalPrice: item.itemTotal.toFixed(2), productImage: item.product.mainImage });
