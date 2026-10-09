@@ -29,6 +29,7 @@ interface CartContextType {
   clearCart: () => void;
   subtotal: number;
   deliveryFee: number;
+  taxAmount: number;
   discountAmount: number;
   total: number;
   totalItemsCount: number;
@@ -48,8 +49,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [appliedCoupon, setAppliedCoupon] = useState<AppliedCoupon | null>(null);
   const [couponError, setCouponError] = useState<string | null>(null);
-  const [freeDeliveryThreshold, setFreeDeliveryThreshold] = useState<number>(35.00);
-  const [defaultDeliveryFee, setDefaultDeliveryFee] = useState<number>(4.95);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
@@ -66,13 +65,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
     setIsLoaded(true);
 
-    fetch("/api/delivery-settings")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data?.freeDeliveryThreshold) setFreeDeliveryThreshold(parseFloat(data.freeDeliveryThreshold));
-        if (data?.deliveryFee) setDefaultDeliveryFee(parseFloat(data.deliveryFee));
-      })
-      .catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -147,9 +139,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   };
 
   const subtotal = items.reduce((sum, item) => sum + item.pricePerKg * item.quantity, 0);
-  const isFreeDelivery = items.length > 0 && subtotal >= freeDeliveryThreshold;
-  const deliveryFee = items.length === 0 ? 0 : isFreeDelivery ? 0 : defaultDeliveryFee;
-  const amountNeededForFreeDelivery = Math.max(0, freeDeliveryThreshold - subtotal);
+  const deliveryFee = 0;
+  const taxAmount = Math.round(Math.max(0, subtotal - (appliedCoupon ? (appliedCoupon.discountType === "percentage" ? subtotal * appliedCoupon.discountValue / 100 : Math.min(subtotal, appliedCoupon.discountValue)) : 0)) * 0.09 * 100) / 100;
+  const freeDeliveryThreshold = 0;
+  const amountNeededForFreeDelivery = 0;
+  const isFreeDelivery = true;
 
   let discountAmount = 0;
   if (appliedCoupon && subtotal > 0) {
@@ -157,7 +151,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     else discountAmount = Math.min(subtotal, appliedCoupon.discountValue);
   }
 
-  const total = Math.max(0, subtotal - discountAmount + deliveryFee);
+  const total = Math.max(0, subtotal - discountAmount + taxAmount);
   const totalItemsCount = items.reduce((count, item) => count + item.quantity, 0);
 
   return (
@@ -168,7 +162,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       removeItem,
       clearCart,
       subtotal: Math.round(subtotal * 100) / 100,
-      deliveryFee: Math.round(deliveryFee * 100) / 100,
+      deliveryFee: 0,
+      taxAmount,
       discountAmount: Math.round(discountAmount * 100) / 100,
       total: Math.round(total * 100) / 100,
       totalItemsCount: Math.round(totalItemsCount),
