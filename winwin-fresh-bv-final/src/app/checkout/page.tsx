@@ -17,6 +17,7 @@ type CheckoutForm = {
   houseNumber: string;
   postalCode: string;
   city: string;
+  country: string;
   addressExtra: string;
   orderNotes: string;
 };
@@ -82,6 +83,7 @@ export default function CheckoutPage() {
     houseNumber: "",
     postalCode: "",
     city: "",
+    country: "Nederland",
     addressExtra: "",
     orderNotes: "",
   });
@@ -91,6 +93,11 @@ export default function CheckoutPage() {
   useEffect(() => {
     if (cart.items.length === 0) router.replace("/cart");
   }, [cart.items.length, router]);
+
+  const euCountries = ["Nederland", "België", "Duitsland", "Frankrijk", "Spanje", "Italië", "Portugal", "Luxemburg", "Oostenrijk", "Denemarken", "Zweden", "Finland", "Ierland", "Polen", "Tsjechië", "Slowakije", "Slovenië", "Kroatië", "Hongarije", "Roemenië", "Bulgarije", "Griekenland", "Estland", "Letland", "Litouwen", "Cyprus", "Malta"];
+  const vatRate = form.country === "Nederland" || !euCountries.includes(form.country) ? 0.09 : 0;
+  const checkoutTax = Math.round(Math.max(0, cart.subtotal - cart.discountAmount) * vatRate * 100) / 100;
+  const checkoutTotal = Math.max(0, cart.subtotal - cart.discountAmount + checkoutTax);
 
   const update = (key: keyof CheckoutForm, value: string) => {
     setForm((current) => ({ ...current, [key]: value }));
@@ -114,6 +121,7 @@ export default function CheckoutPage() {
           houseNumber: form.houseNumber,
           postalCode: form.postalCode,
           city: form.city,
+          country: form.country,
           addressExtra: form.addressExtra,
           orderNotes: form.orderNotes,
           items: cart.items.map((item) => ({
@@ -189,6 +197,7 @@ export default function CheckoutPage() {
                 <CheckoutField label={t.checkout.houseNumber} name="houseNumber" value={form.houseNumber} onChange={update} />
                 <CheckoutField label={t.checkout.postalCode} name="postalCode" value={form.postalCode} onChange={update} placeholder="1016 EK" />
                 <CheckoutField label={t.checkout.city} name="city" value={form.city} onChange={update} />
+                <label className="block"><span className="text-xs font-semibold text-stone-700">{lang === "nl" ? "Land" : "Country"} <span className="text-red-600">*</span></span><select required value={form.country} onChange={(e) => update("country", e.target.value)} className="mt-1.5 h-11 w-full rounded-xl border border-stone-200 bg-white px-3.5 text-sm outline-none focus:border-emerald-700 focus:ring-2 focus:ring-emerald-100"><optgroup label={lang === "nl" ? "Europese Unie" : "European Union"}>{euCountries.map((country) => <option key={country} value={country}>{country}</option>)}</optgroup><optgroup label={lang === "nl" ? "Buiten de EU" : "Outside EU"}>{["Verenigd Koninkrijk", "Zwitserland", "Noorwegen", "Verenigde Staten", "Canada", "Verenigde Arabische Emiraten", "Saoedi-Arabië", "Egypte", "Anders"].map((country) => <option key={country} value={country}>{country}</option>)}</optgroup></select></label>
                 <div className="sm:col-span-2">
                   <CheckoutField label={t.checkout.addressExtra} name="addressExtra" value={form.addressExtra} onChange={update} required={false} />
                 </div>
@@ -266,7 +275,7 @@ export default function CheckoutPage() {
               </div>
               <div className="flex justify-between pt-3 border-t border-stone-100 text-lg">
                 <strong>{t.cart.total}</strong>
-                <strong className="text-emerald-900">{formatPrice(cart.total, lang)}</strong>
+                <strong className="text-emerald-900">{formatPrice(checkoutTotal, lang)}</strong>
               </div>
             </div>
           </aside>
